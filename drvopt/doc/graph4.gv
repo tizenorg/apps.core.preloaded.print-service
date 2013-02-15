@@ -1,0 +1,12 @@
+digraph A {
+	node [shape = box, style=rounded];
+	label="\nTree after adding second element(8,9,5,2)"
+	init[label="empty root node"];
+	98[label="9,8",color=red];
+	74[label="7,4"];
+	52[label="5,2"];
+	init -> 98;
+	98 -> 74;
+	98 -> 52;
+}
+

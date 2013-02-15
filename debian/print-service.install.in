@@ -1,0 +1,8 @@
+@PREFIX@/lib/*.so*
+@PREFIX@/share/print-service/*
+/opt/etc/ppd_db.sql
+/opt/etc/ppd_db_data.sql
+#/opt/etc/cups/ppd/Generic/*
+/opt/etc/cups/ppd/Hp/*
+/opt/etc/cups/ppd/Samsung/*
+/opt/etc/cups/ppd/Epson/*

@@ -1,0 +1,15 @@
+digraph A {
+	node [shape = box, style=rounded];
+	label="\nTree after adding fourth element(3,9,5)"
+	init[label="empty root node"];
+	74[label="7,4"];
+	52[label="5,2"];
+	395[label="3,9,5"];
+	init -> 395;
+	init -> 8;
+	8 -> 6;
+	8 -> 9;
+	9 -> 74;
+	9 -> 52;
+}
+

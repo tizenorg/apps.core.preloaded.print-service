@@ -1,0 +1,9 @@
+digraph A {
+	node [shape = box, style=rounded];
+	label="\nInitial set of elements"
+	7984[label="7,9,8,4"];
+	8952[label="8,9,5,2"];
+	86[label="8,6"];
+	395[label="3,9,5"];
+}
+

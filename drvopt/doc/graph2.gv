@@ -1,0 +1,6 @@
+digraph A {
+	node [shape = box, style=rounded];
+	label="\nInitial state of tree";
+	init[label="empty root node"];
+}
+
