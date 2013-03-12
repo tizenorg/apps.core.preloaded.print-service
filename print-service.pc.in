@@ -1,0 +1,10 @@
+prefix=@PREFIX@
+exec_prefix=@EXEC_PREFIX@
+libdir=@LIBDIR@
+includedir=@INCLUDEDIR@
+
+Name: print-service
+Description: print-service
+Version: @VERSION@
+Libs: -L${libdir} -lprint-service
+Cflags: -I${includedir}/print-service -DEXPORT_API=""

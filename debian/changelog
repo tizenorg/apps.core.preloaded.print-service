@@ -1,0 +1,857 @@
+print-service (1.2.4-2) unstable; urgency=low
+
+  * Fixed prevent error(NULL-terminated string, RETURN check)
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-2
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Mon, 21 Jan 2013 19:30:11 +0900
+
+print-service (1.2.4-1) unstable; urgency=low
+
+  * Changed Flora license url
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-1
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 17 Jan 2013 18:47:41 +0900
+
+print-service (1.2.3-49) unstable; urgency=low
+
+  * Modified private value to accessor function to support cups 1.6.1
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-49
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Mon, 31 Dec 2012 16:41:11 +0900
+
+print-service (1.2.3-48) unstable; urgency=low
+
+  * Changed log macro
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-48
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 18 Dec 2012 00:07:28 +0900
+
+print-service (1.2.3-47) unstable; urgency=low
+
+  * Updated printer searching routine
+  * Commented out unused option routine
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-47
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Sat, 15 Dec 2012 01:02:15 +0900
+
+print-service (1.2.3-46) unstable; urgency=low
+
+  * Added Samsung MediaType keywords
+  * Fixed Option mapping bug
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-46
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Thu, 13 Dec 2012 19:18:19 +0900
+
+print-service (1.2.3-45) unstable; urgency=low
+
+  * Updated samsung ppd files and Added SCX-1490W.ppd and SCX-2000FW.ppd
+  * Fixed to find HP CP1525nw 
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-45
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 07 Dec 2012 16:24:58 +0900
+
+print-service (1.2.3-44) unstable; urgency=low
+
+  * Fixed memory corruption in getdrv
+  * Changed hp.drv because 6_remove_osx_keyword is working incorrectly
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-44
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 05 Dec 2012 18:08:16 +0900
+
+print-service (1.2.3-43) unstable; urgency=low
+
+  * Updated epson laser escpage ppd keyword
+  * Removed OSX keyword in hp ppd files
+  * Updated TC to verify PPD in semantics
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-43
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 04 Dec 2012 20:54:46 +0900
+
+print-service (1.2.3-42) unstable; urgency=low
+
+  * Added latest samsung printer ppd files
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-42
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 30 Nov 2012 16:26:33 +0900
+
+print-service (1.2.3-41) unstable; urgency=low
+
+  * tag update for SR
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-41
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Fri, 23 Nov 2012 17:38:50 +0900
+
+print-service (1.2.3-40) unstable; urgency=low
+
+  * Fixed default grayscale option in case of CMAndResolution keyword
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-40
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Tue, 20 Nov 2012 11:21:29 +0900
+
+print-service (1.2.3-39) unstable; urgency=low
+
+  * Update version to SR
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-39
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 13 Nov 2012 20:10:11 +0900
+
+print-service (1.2.3-38) unstable; urgency=low
+
+  * Deleted sqlite related file and dependency
+  * Added ppd extraction test script
+  * Added original drv files
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-38
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 09 Nov 2012 19:40:54 +0900
+
+print-service (1.2.3-37) unstable; urgency=low
+
+  * Applied option mapping(UI Contraints) by SMRC
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-37
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Sat, 03 Nov 2012 14:52:11 +0900
+
+print-service (1.2.3-36) unstable; urgency=low
+
+  * Fixed prevent defects
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-36
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 01 Nov 2012 21:17:40 +0900
+
+print-service (1.2.3-35) unstable; urgency=low
+
+  * Fixed prevent defects
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-35
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 30 Oct 2012 16:57:46 +0900
+
+print-service (1.2.3-34) unstable; urgency=low
+
+  * Unified job progress parsing routine to use only notify-text
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-34
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Sat, 27 Oct 2012 16:32:21 +0900
+
+print-service (1.2.3-32) unstable; urgency=low
+
+  * Applied image custom size printing
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-32
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 12 Oct 2012 17:20:43 +0900
+
+print-service (1.2.3-31) unstable; urgency=low
+
+  * Added license file
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-31
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 12 Oct 2012 11:01:00 +0900
+
+print-service (1.2.3-30) unstable; urgency=low
+
+  * Code Clean up
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-30
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 10 Oct 2012 19:32:23 +0900
+
+print-service (1.2.3-29) unstable; urgency=low
+
+  * Applied SLP Coding Style
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-29
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Mon, 08 Oct 2012 11:06:10 +0900
+
+print-service (1.2.3-28) unstable; urgency=low
+
+  * Fixed Crash(11835,11820) which is caused by pclose with NULL argument in pt_getppd
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-28
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 05 Oct 2012 15:02:25 +0900
+
+print-service (1.2.3-27) unstable; urgency=low
+
+  * Enabled n-up printing to send n-up option to CUPS
+  * Disabled converting pdf to images because that pdftoraster is fixed about OOM issue
+  * Fixed getdrv to print output ppd file name
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-27
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 27 Sep 2012 11:33:37 +0900
+
+print-service (1.2.3-26) unstable; urgency=low
+
+  * Added event cb in thread canceled cb
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-26
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Tue, 25 Sep 2012 17:40:12 +0900
+
+print-service (1.2.3-25) unstable; urgency=low
+
+  * Added smack manifest file
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-25
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 19 Sep 2012 22:02:34 +0900
+
+print-service (1.2.3-24) unstable; urgency=low
+
+  * Added original ppd file and scripts to maintain 
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-24
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 18 Sep 2012 19:59:37 +0900
+
+print-service (1.2.3-23) unstable; urgency=low
+
+  * Added hp option keywords by the result of HP 1st IOT
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-23
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Tue, 18 Sep 2012 13:44:36 +0900
+
+print-service (1.2.3-22) unstable; urgency=low
+
+  * Support CLX-216x, CLX-3160, ML-1630, ML-3050, SCX-4725, SCX-4x16 additionally
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-22
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 18 Sep 2012 13:27:05 +0900
+
+print-service (1.2.3-21) unstable; urgency=low
+
+  * Changed to use hpcups in hp photosmart premium c309g-m
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-21
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 14 Sep 2012 22:02:32 +0900
+
+print-service (1.2.3-20) unstable; urgency=low
+
+  * Changed converting format from jpeg to png in using pdftoppm
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-20
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 13 Sep 2012 12:50:50 +0900
+
+print-service (1.2.3-19) unstable; urgency=low
+
+  * Changed drv file to find HP CP1525 NW
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-19
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 11 Sep 2012 21:44:23 +0900
+
+print-service (1.2.3-18) unstable; urgency=low
+
+  * Changed system() to fork/exec function because of security
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-18
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 06 Sep 2012 21:27:28 +0900
+
+print-service (1.2.3-17) unstable; urgency=low
+
+  * Added Series in ModelName of samsung ppd file
+  * Modified ModelName of Epson Stylus Tx560WD to match NickName with ModelName
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-17
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 04 Sep 2012 21:20:29 +0900
+
+print-service (1.2.3-16) unstable; urgency=low
+
+  * Fixed n-up printing not to send n-up option to CUPS
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-16
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 04 Sep 2012 13:35:29 +0900
+
+print-service (1.2.3-15) unstable; urgency=low
+
+  * Changed page/progress parsing routine in case of samsung filter
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-15
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Mon, 03 Sep 2012 21:44:36 +0900
+
+print-service (1.2.3-14) unstable; urgency=low
+
+  * Fixed crash when terminated
+  * Fixed page number updating
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-14
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Sun, 02 Sep 2012 03:06:09 +0900
+
+print-service (1.2.3-13) unstable; urgency=low
+
+  * Added converting api from pdf to image to resolve OOM issue
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-13
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Sat, 01 Sep 2012 20:49:39 +0900
+
+print-service (1.2.3-12) unstable; urgency=low
+
+  * Fixed popen code in get_ppd and Disabled to install ppd db
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-12
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Sat, 01 Sep 2012 00:31:46 +0900
+
+print-service (1.2.3-11) unstable; urgency=low
+
+  * Update version for SR
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-11
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 31 Aug 2012 18:48:19 +0900
+
+print-service (1.2.3-10) unstable; urgency=low
+
+  * Fixed drv file to support CLP-310 Series
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-10
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Mon, 27 Aug 2012 22:01:55 +0900
+
+print-service (1.2.3-9) unstable; urgency=low
+
+  * Modified filter name of CLP-320 to rastertosplc
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-9
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Mon, 27 Aug 2012 20:34:48 +0900
+
+print-service (1.2.3-8) unstable; urgency=low
+
+  * Added removing routine of printing_thd_list for job spooling
+  * Changed CLP-320 filter name from rastertosplc to rastertosamsungsplc in samsung.drv.gz
+  * Added pending event
+  * Added job complte event
+  * Added pending condtion in printing_thread
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-8
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Sat, 25 Aug 2012 20:39:35 +0900
+
+print-service (1.2.3-7) unstable; urgency=low
+
+  * Updated job spooling routine
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-7
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Fri, 24 Aug 2012 18:33:48 +0900
+
+print-service (1.2.3-6) unstable; urgency=low
+
+  * Modify unnecessary connectivity check
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-6
+
+ -- Dongwook Lee <dwmax.lee@samsung.com>  Tue, 22 Aug 2012 00:55:16 +0900
+
+print-service (1.2.3-5) unstable; urgency=low
+
+  * Fixed wrong cupsFilter value of HP Photosmart printer in hp.drv
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.3-5
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Tue, 21 Aug 2012 23:19:16 +0900
+
+print-service (1.2.3-4) unstable; urgency=low
+
+  * Update version to submit SR
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.3-4
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Sat, 18 Aug 2012 20:18:25 +0900
+
+print-service (1.2.3-3) unstable; urgency=low
+
+  * Added drvopt/getdrv feature
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.3-3
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Sat, 18 Aug 2012 15:58:29 +0900
+
+print-service (1.2.3-2) unstable; urgency=low
+
+  * Modified set printer ppd function to resolve protex issue.
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.3-2
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Tue, 14 Aug 2012 19:40:22 +0900
+
+print-service (1.2.3-1) unstable; urgency=low
+
+  * Added max enum of paper size to use it in array definition
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.3-1
+
+ -- Taeksu Shin <nani@taeksu-desktop-ubuntu>  Thu, 09 Aug 2012 22:14:54 +0900
+
+print-service (1.2.2-6) unstable; urgency=low
+
+  * Updated job_id supported progress
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.2-6
+
+ -- Taeksu Shin <nani@taeksu-desktop-ubuntu>  Thu, 09 Aug 2012 22:14:54 +0900
+
+print-service (1.2.2-5) unstable; urgency=low
+
+  * Fixed issue that /opt/etc/cups/ppd is installed as root:root permission instead of app:app
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.2-5
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 08 Aug 2012 15:33:01 +0900
+
+print-service (1.2.2-4) unstable; urgency=low
+
+  * Fixed Jira defect(S1-6657) that printed output is different with preview.
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.2-4
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 07 Aug 2012 11:09:19 +0900
+
+print-service (1.2.2-3) unstable; urgency=low
+
+  * Update version for submitting to SLP:Main as correct SR note.
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.2-3
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 27 Jul 2012 13:36:34 +0900
+
+print-service (1.2.2-2) unstable; urgency=low
+
+  * Fixed the issue that print error popup is shown in canceling printing
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.2-2
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 26 Jul 2012 23:07:39 +0900
+
+print-service (1.2.2-1) unstable; urgency=low
+
+  * Enabled to support ipp
+  * fixed that /opt/etc/cups/ppd is deleted when printer-driver-data is
+    uninstalled
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.2-1
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 26 Jul 2012 12:32:08 +0900
+
+print-service (1.2.1-12) unstable; urgency=low
+
+  * Unused enum value and routine are commented out
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-12
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Wed, 25 Jul 2012 17:24:39 +0900
+
+print-service (1.2.1-11) unstable; urgency=low
+
+  * Commented out unused value in scaling enum
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-11
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Wed, 25 Jul 2012 16:25:37 +0900
+
+print-service (1.2.1-10) unstable; urgency=low
+
+  * Fixed to use DLOG for normal developer
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-10
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 24 Jul 2012 14:09:21 +0900
+
+print-service (1.2.1-9) unstable; urgency=low
+
+  * Fixed the issue that color image is printed although gray option is set.
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-9
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Mon, 23 Jul 2012 18:05:38 +0900
+
+print-service (1.2.1-8) unstable; urgency=low
+
+  * Fixed the issue not to search Epson/Hp printer
+  * Fixed the issue that /opt/etc/cups/ is deleted in uninstalling print-driver-data
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-8
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Sun, 22 Jul 2012 16:17:50 +0900
+
+print-service (1.2.1-7) unstable; urgency=low
+
+  * Changed to choose pdl-datastream temporarily because samsung filter's error
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-7
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 18 Jul 2012 21:12:46 +0900
+
+print-service (1.2.1-6) unstable; urgency=low
+
+  * Changed samsung cts files make symlink to point /opt/etc/cups/ppd/Samsung/cts_files
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-6
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 18 Jul 2012 18:03:57 +0900
+
+print-service (1.2.1-5) unstable; urgency=low
+
+  * Included cts, ppd files to new printer-driver package because of FOTA update
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-5
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 12 Jul 2012 13:51:42 +0900
+
+print-service (1.2.1-4) unstable; urgency=low
+
+  * Changed polling routine of progresbar
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-4
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Wed, 27 Jun 2012 19:08:21 +0900
+
+print-service (1.2.1-3) unstable; urgency=low
+
+  * Applied ecore_thread to resolve UI lock-up issues
+  * Fixed compilation warning
+  * Changed thread processing routines
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-3
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Wed, 20 Jun 2012 15:10:30 +0900
+
+print-service (1.2.1-2) unstable; urgency=low
+
+  * Changed ppd_db string for CLP-315WK
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-2
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 19 Jun 2012 16:44:22 +0900
+
+print-service (1.2.1-1) unstable; urgency=low
+
+  * Fixed not to search network printer when wifi is not accessed
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.1-1
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Mon, 18 Jun 2012 21:15:11 +0900
+
+print-service (1.2.0-1) unstable; urgency=low
+
+  * Fixed to search all printer type(ipp, pdl, lpd)
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.2.0-1
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Mon, 18 Jun 2012 19:49:01 +0900
+
+print-service (1.1.3-6) unstable; urgency=low
+
+  * Changed sequence of paper size enum to use A4 by default
+  * Fixed auto orientation operation
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.3-6
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Mon, 11 Jun 2012 15:30:03 +0900
+
+print-service (1.1.3-5) unstable; urgency=low
+
+  * Fixed wrong checking in case of spooling job progress 100%
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.3-5
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Fri, 08 Jun 2012 22:36:55 +0900
+
+print-service (1.1.3-4) unstable; urgency=low
+
+  * Changed manufacturer checking function from strncmp to strncasecmp
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.3-4
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Thu, 07 Jun 2012 17:17:23 +0900
+
+print-service (1.1.3-3) unstable; urgency=low
+
+  * Applied SMRC patch to support setting operation
+  * Added basic converting routine to support vendor specific option
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.3-3
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Fri, 01 Jun 2012 17:16:34 +0900
+
+print-service (1.1.3-2) unstable; urgency=low
+
+  * changed vconf key for memory/Device/usbhost/status to memory/sysman/usbhost_status
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.3-2
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 30 May 2012 11:30:25 +0900
+
+print-service (1.1.3-1) unstable; urgency=low
+
+  * fixed crash in selecting printer
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.3-1
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 25 May 2012 23:09:02 +0900
+
+print-service (1.1.2-2) unstable; urgency=low
+
+  * Added spooling job notification routine
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.2-2
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Fri, 25 May 2012 14:56:56 +0900
+
+print-service (1.1.2-1) unstable; urgency=low
+
+  * Added rule to launch usb-printer-detector app
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.2-1
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 10 May 2012 15:34:14 +0900
+
+print-service (1.1.1-6) unstable; urgency=low
+
+  * Added ML-2160.ppd for Samsung printer
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.1-6
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 03 May 2012 19:38:18 +0900
+
+print-service (1.1.0-6) unstable; urgency=low
+
+  * fixed spec file
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.0-6
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 26 Apr 2012 17:27:16 +0900
+
+print-service (1.1.0-5) unstable; urgency=low
+
+  * fixed postint to create memory/Device/usbhost/status key
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.0-5
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 26 Apr 2012 17:18:53 +0900
+
+print-service (1.1.0-4) unstable; urgency=low
+
+  * rename udev rules file
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.0-4
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 26 Apr 2012 16:41:18 +0900
+
+print-service (1.1.0-3) lucid; urgency=low
+
+  * added udev rules to change /dev/usb/lp0 as mode(666)
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.0-3
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 26 Apr 2012 15:56:45 +0900
+
+print-service (1.1.0-2) unstable; urgency=low
+
+  * fixed print-service.spec to add Epson printer ppd
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.0-2
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 26 Apr 2012 13:11:02 +0900
+
+print-service (1.1.0-1) unstable; urgency=low
+
+  * deleted printer ppd file to commit as official binary
+  * fixed to use device-make_and_model instead of device-info
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.1.0-1
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 25 Apr 2012 15:37:38 +0900
+
+print-service (1.0.3-1) unstable; urgency=low
+
+  * added epson tx600fw printer in ppd db
+  * changed to filter _printer service in avahi-daemon
+  * changed to natural-scaling=50 in default
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.0.3-1
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 24 Apr 2012 20:00:32 +0900
+
+print-service (1.0.2.3-1) unstable; urgency=low
+
+  * fixed crash in searching usb printer and fixed missing ppd directory
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.0.2.3-1
+
+ -- GangHeok Kim <gangehok.kim@samsung.com>  Mon, 23 Apr 2012 19:12:50 +0900
+
+print-service (1.0.2.2-8) unstable; urgency=low
+
+  * fix memory free error and added print color option
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.0.2.2-8
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Sat, 21 Apr 2012 16:30:59 +0900
+
+print-service (1.0.2.1-8) unstable; urgency=low
+
+  * Updated printer ppd file for Epson and Hp
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.0.2.1-8
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 18 Apr 2012 17:23:10 +0900
+
+print-service (1.0.2.0-8) unstable; urgency=low
+
+  * Modified cupsfilter setting to support samsung printer
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.0.2.0-8
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Mon, 16 Apr 2012 14:16:05 +0900
+
+print-service (1.0.2.0-7) unstable; urgency=low
+
+  * Added/Deleted ppd file/db to list up supported samsung printer
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.0.2.0-7
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 13 Apr 2012 14:10:35 +0900
+
+print-service (1.0.2.0-6) unstable; urgency=low
+
+  * Add usb hot-spot and multifile support
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.0.2.0-6
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 08 Feb 2012 15:19:44 +0900
+
+print-service (1.0.1.2-6) unstable; urgency=low
+
+  * Added job cancel feature
+  * Git: slp/apps/p/print-service
+  * Tag: print-service_1.0.1.2-6
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 09 Dec 2011 16:41:20 +0900
+
+print-service (1.0.1.1-5) unstable; urgency=low
+
+  * Added LICENSE / boilerplate
+  * Git: 165.213.180.234:slp/apps/p/print-service
+  * Tag: print-service_1.0.1.1-5
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 02 Dec 2011 18:36:15 +0900
+
+print-service (1.0.1.1-4) unstable; urgency=low
+
+  * Added boilerplate
+  * Git: 165.213.180.234:slp/apps/p/print-service
+  * Tag: print-service_1.0.1.1-4
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 02 Dec 2011 15:40:51 +0900
+
+print-service (1.0.1.0-4) unstable; urgency=low
+
+  * Deleted poppler code 
+  * Git: 165.213.180.234:slp/apps/p/print-service
+  * Tag: print-service_1.0.1.0-4
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 01 Dec 2011 16:39:26 +0900
+
+print-service (1.0.0.3-3) unstable; urgency=low
+
+  * Modified depends in control file
+  * Git: 165.213.180.234:slp/apps/p/print-service
+  * Tag: print-service_1.0.0.3-3
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 11 Nov 2011 20:39:42 +0900
+
+print-service (1.0.0.3-2) unstable; urgency=low
+
+  * Modified prints-service-dev depends
+  * Git: 165.213.180.234:slp/apps/p/print-service
+  * Tag: print-service_1.0.0.3-2
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 08 Nov 2011 13:39:53 +0900
+
+print-service (1.0.0.3-1) unstable; urgency=low
+
+  * Changed navigationbar to naviframe
+  * Git: 165.213.180.234:slp/apps/p/print-service
+  * Tag: print-service_1.0.0.3-1
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Sat, 05 Nov 2011 13:16:27 +0900
+
+print-service (1.0.0.2-2) unstable; urgency=low
+
+  * Added build-depends
+  * Git: 165.213.180.234:slp/apps/p/print-service
+  * Tag: print-service_1.0.0.2-2
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 04 Nov 2011 16:28:19 +0900
+
+print-service (1.0.0.2-1) unstable; urgency=low
+
+  * Added Maintainer
+  * Git: 165.213.180.234:slp/apps/p/print-service
+  * Tag: print-service_1.0.0.2-1
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 04 Nov 2011 10:05:59 +0900
+
+print-service (1.0.0.2) unstable; urgency=low
+
+  * initial commit
+  * Git: 165.213.180.234:slp/apps/p/print-service
+  * Tag: print-service_1.0.0.2
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 02 Nov 2011 16:46:41 +0900
+
+print-service (1.0.0.2) unstable; urgency=low
+
+  * change api for new UI
+  * Git: 165.213.180.234:/git/slp/pkgs/print-engine
+  * Tag: print-service_1.0.0.2
+
+ -- Yin Shouchen <shouchen.yin@samsung.com>  Mon, 17 Oct 2011 16:26:39 +0900
+ 
+print-service (1.0.0.1) unstable; urgency=low
+
+  * upload basic features
+  * Git: 165.213.180.234:/git/slp/pkgs/print-engine
+  * Tag: print-service_1.0.0.1
+
+ -- Gu Wang <wang.gu@samsung.com>  Tue, 23 Aug 2011 15:26:39 +0900
+ 
+print-service (0.1.0.1) unstable; urgency=low
+
+  * Initial Release
+  * Git: 165.213.180.234:/git/slp/pkgs/print-engine
+  * Tag: print-service_0.1.0.1
+
+ -- Chen HanWu <hanwu.chen@samsung.com>  Tue, 03 Oct 2010 17:02:36 +0900

@@ -1,0 +1,8 @@
+digraph A {
+	node [shape = box, style=rounded];
+	label="\nTree after adding first element(7,9,8,4)"
+	init[label="empty root node"];
+	7984[label="7,9,8,4"];
+	init -> 7984;
+}
+

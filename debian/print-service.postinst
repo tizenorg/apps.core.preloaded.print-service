@@ -1,0 +1,34 @@
+#!/bin/sh
+#if [ ${USER} == "root" ]
+#then
+	# Change file owner
+#fi
+
+# Change file permissions
+# 1. libraries
+#chmod 644 /usr/lib/print-service.so
+# 2. executables
+# 3. configurations
+
+mkdir -p /opt/dbspace
+
+if [ -f /opt/dbspace/.ppd.db ]
+then
+	rm -f /opt/dbspace/.ppd*
+fi
+
+sqlite3 /opt/dbspace/.ppd.db < /opt/etc/ppd_db.sql
+sqlite3 /opt/dbspace/.ppd.db < /opt/etc/ppd_db_data.sql
+
+rm -f /opt/etc/ppd_db.sql
+rm -f /opt/etc/ppd_db_data.sql
+
+mkdir -p /etc/udev/rules.d
+if ! [ -L /etc/udev/rules.d/91-print-service.rules ]; then
+        ln -s /usr/share/print-service/udev-rules/91-print-service.rules /etc/udev/rules.d/91-print-service.rules
+fi
+
+#vconftool -i set -t int memory/Device/usbhost/status 0
+
+#chmod 600 /opt/dbspace/.ppd.db
+#chmod 600 /opt/dbspace/.ppd.db-journal
