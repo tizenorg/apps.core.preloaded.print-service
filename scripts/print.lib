@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# This set of functions is considered
+# to be used for creating some colored messages
+
+function print-error {
+	local _MSG="$1"
+	printf "[\E[31m${FUNCNAME[1]}\E[0m] %s\n" "$1"
+}

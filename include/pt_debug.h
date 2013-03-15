@@ -28,17 +28,17 @@
 #include <dlog.h>
 
 #define PT_VERBOSE(fmt, args...) \
-        LOGV(fmt, ##args)
+	LOGV(fmt, ##args)
 #define PT_INFO(fmt, args...) \
-        LOGI(fmt, ##args)
+	LOGI(fmt, ##args)
 #define PT_DEBUG(fmt, args...) \
-        LOGD(fmt, ##args)
+	LOGD(fmt, ##args)
 #define PT_WARN(fmt, args...) \
-        LOGW(fmt, ##args)
+	LOGW(fmt, ##args)
 #define PT_ERROR(fmt, args...) \
-        LOGE(fmt, ##args)
+	LOGE(fmt, ##args)
 #define PT_FATAL(fmt, args...) \
-        LOGF(fmt, ##args)
+	LOGF(fmt, ##args)
 
 #define PT_RET_IF(expr, fmt, args...) \
 	do { \
@@ -63,7 +63,7 @@
 			mem = NULL; \
 		} \
 	} while (0)
-        
+
 #define PRINT_SERVICE_FUNC_ENTER PT_INFO("ENTER FUNCTION: %s\n", __FUNCTION__);
 #define PRINT_SERVICE_FUNC_LEAVE PT_INFO("EXIT FUNCTION: %s\n", __FUNCTION__);
 
@@ -73,7 +73,7 @@
 	do { \
 		fprintf((prio ? stderr : stdout), "%s:%s(%d)>"fmt"\n", __FILE__, __func__, __LINE__, ##arg);\
 	} while (0)
-	
+
 #define PT_DEBUG(fmt, arg...) \
 	do { \
 		printf("%s:%s(%d)>"fmt"\n", __FILE__, __func__, __LINE__, ##arg); \

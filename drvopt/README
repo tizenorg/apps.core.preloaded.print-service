@@ -1,13 +1,12 @@
 how to use drvopt optimizer:
 
-1) compile set of ppd files into one drv
-   and on output we'll receive one .drv file(ppdi.drv):
+1) compile set of ppd files into one optimized drv
    
-	ppdc /home/i.mankaev/work/print-service/ppds/Hp/*
+	drvopt -d /hp -o hp.drv
 
-2) optimize received .drv file by drvopt:
+2) compress received .drv file by gzip:
 	
-	drvopt -i ppdi.drv -o stripped.drv
+	gzip hp.drv
 
 
 how to use getdrv extractor:
@@ -16,3 +15,8 @@ how to use getdrv extractor:
 
 	getdrv -i stripped.drv -r <modelname>
 
+or
+
+extract required driver by Product attribute:
+
+	getdrv -p <product> -i hp.drv

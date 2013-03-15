@@ -22,11 +22,16 @@
 #include <ctype.h>
 #include <cups/ppd.h>
 #include <cups/http.h>
+#include <linux/unistd.h>
+#include <sys/utsname.h>
+#include <dirent.h>
 
 #include "pt_debug.h"
 #include "pt_common.h"
 
-static ppd_file_t *ppd;
+#define MAX_PPDGZ_SIZE (1048576)
+
+ppd_file_t *ppd;
 
 int __standardization(char *name)
 {
@@ -106,164 +111,6 @@ void pt_utils_free_printing_thd_list(Eina_List *list)
 	}
 }
 
-/******************************print***********************************/
-
-/***
-* '__enable_printer()' - Enable a printer...
-* I - Server connection
-* I - Printer to enable
-* O - 0 on success, 1 on fail
-***/
-
-static int	__enable_printer(http_t *http, char *printer, char *device_uri)
-{
-	/* IPP Request */
-	ipp_t *request;
-	ipp_t *response;	  /* IPP Response */
-	char uri[HTTP_MAX_URI];  /* URI for printer/class */
-
-	/*
-	* Build a CUPS_ADD_PRINTER request, which requires the following
-	* attributes:
-	*
-	*	 attributes-charset
-	*	 attributes-natural-language
-	*	 printer-uri
-	*	 printer-state
-	*	 printer-is-accepting-jobs
-	*/
-
-	//request = ippNewRequest(CUPS_ADD_PRINTER);
-	request = ippNewRequest(CUPS_ADD_MODIFY_PRINTER);
-
-	//httpAssembleURIf(HTTP_URI_CODING_ALL, uri, sizeof(uri), "ipp", NULL, "localhost", 0, "/printers/%s", printer);
-	httpAssembleURIf(HTTP_URI_CODING_ALL, uri, sizeof(uri), "ipp", NULL, "localhost", 631, "/printers/%s", printer);
-	ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, "printer-uri", NULL, uri);
-
-	if (device_uri[0] == '/') {
-		snprintf(uri, sizeof(uri), "file://%s", device_uri);
-		ippAddString(request, IPP_TAG_PRINTER, IPP_TAG_URI, "device-uri", NULL, uri);
-	} else {
-		ippAddString(request, IPP_TAG_PRINTER, IPP_TAG_URI, "device-uri", NULL, device_uri);
-	}
-
-	ippAddInteger(request, IPP_TAG_PRINTER, IPP_TAG_ENUM, "printer-state", IPP_PRINTER_IDLE);
-
-	ippAddBoolean(request, IPP_TAG_PRINTER, "printer-is-accepting-jobs", 1);
-
-	/*
-	* Do the request and get back a response...
-	*/
-#ifdef CUPS_161_UPGRADE
-	if ((response = cupsDoRequest(http, request, "/admin/")) == NULL) {
-		PT_DEBUG("cupsDoRequest Failed");
-		return (1);
-	} else if (ippGetStatusCode(response) > IPP_OK_EVENTS_COMPLETE) {
-		PT_DEBUG("%x greater than IPP_OK_EVENTS_COMPLETE -- Failed", ippGetStatusCode(response));
-		ippDelete(response);
-		return (1);
-	} else {
-		ippDelete(response);
-		return (0);
-	}
-#else
-	if ((response = cupsDoRequest(http, request, "/admin/")) == NULL) {
-		PT_DEBUG("cupsDoRequest Failed");
-		return (1);
-	} else if (response->request.status.status_code > IPP_OK_EVENTS_COMPLETE) {
-		PT_DEBUG("%x greater than IPP_OK_EVENTS_COMPLETE -- Failed", response->request.status.status_code);
-		ippDelete(response);
-		return (1);
-	} else {
-		ippDelete(response);
-		return (0);
-	}
-#endif
-}
-
-static int	__set_printer_ppd(http_t *http, char *printer, char *ppd_file)
-{
-	ipp_t *request = NULL;
-	ipp_t *response = NULL;
-	char uri[HTTP_MAX_URI] = {0,};
-
-	httpAssembleURIf(HTTP_URI_CODING_ALL, uri, sizeof(uri), "ipp", NULL, "localhost", 0, "/printers/%s", printer);
-
-	request = ippNewRequest(CUPS_ADD_MODIFY_PRINTER);
-
-	ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_URI, "printer-uri", NULL, uri);
-	ippAddString(request, IPP_TAG_OPERATION, IPP_TAG_NAME, "requesting-user-name", NULL, cupsUser());
-
-	if (ppd) {
-		ppdClose(ppd);
-		ppd = NULL;
-	}
-
-	if (ppd_file != NULL) {
-		PT_DEBUG("ppd file is not NULL. %s", ppd_file);
-
-		response = cupsDoFileRequest(http, request, "/admin/", ppd_file);
-
-		if (response != NULL) {
-			ippDelete(response);
-			ppd = ppdOpenFile(ppd_file);
-			if (ppd != NULL) {
-				pt_parse_options(ppd);
-			}
-		} else {
-			PT_DEBUG("Failed to call cupsDoFileRequest");
-		}
-	} else {
-		PT_DEBUG("ppd file is NULL");
-		ippDelete(request);
-		return 1;
-	}
-
-	if (cupsLastError() > IPP_OK_CONFLICT) {
-		PT_DEBUG("The request is failed, detail description: %s\n", cupsLastErrorString());
-		return 1;
-	} else {
-		return 0;
-	}
-}
-
-/**
- *	This function let the app register the printer to the server
- *	@return    If success, return PT_ERR_NONE, else return PT_ERR_FAIL
- *	@param[in] printer_name the pointer to the printer's name
- *	@param[in] scheme the pointer to the register's scheme
- *	@param[in] ip_address the pointer to the printer's address
- *	@param[in] ppd_file the pointer to the printer's ppd file
- */
-int pt_utils_regist_printer(char *printer_name, char *scheme, char *ip_address, char *ppd_file)
-{
-	PT_RETV_IF(printer_name == NULL || ip_address == NULL || ppd_file == NULL , 1 , "Invalid argument");
-
-	/* Connection to server */
-	http_t *http = NULL;
-	char device_url[PT_MAX_LENGTH] = {0,};
-
-	snprintf(device_url, MAX_URI_SIZE, "%s://%s", scheme, ip_address);
-
-	http = httpConnectEncrypt(cupsServer(), ippPort(), cupsEncryption());
-	PT_RETV_IF(http == NULL, 1, "Unable to connect to server");
-
-	if (__enable_printer(http, printer_name, device_url)) {
-		PT_DEBUG("enable return 1");
-		return (1);
-	}
-
-	if (__set_printer_ppd(http, printer_name, ppd_file)) {
-		return (1);
-	}
-
-	if (http) {
-		httpClose(http);
-	}
-	PT_DEBUG("add printer success");
-	return (0);
-}
-
 char *pt_utils_filename_from_URI(const char *uri)
 {
 	char			scheme[1024];	/* URI for printer/class */
@@ -272,6 +119,8 @@ char *pt_utils_filename_from_URI(const char *uri)
 	int             port;		/* Pointer into keyword... */
 	char			resource[1024];	/* Temporary filename */
 	char           *filename = NULL;
+
+	PT_RETV_IF(uri == NULL, NULL, "uri is NULL");
 
 	http_uri_status_t status = httpSeparateURI(HTTP_URI_CODING_ALL, uri, scheme, sizeof(scheme),
 							   username, sizeof(username), hostname, sizeof(hostname), &port,
@@ -326,6 +175,31 @@ static char *pt_utils_trim_space(char *string)
 	return pt_utils_rtrim(pt_utils_ltrim(string));
 }
 
+static char *pt_utils_trim_prefix(const char *string, const char *prefix)
+{
+	PT_RETV_IF(string == NULL, NULL, "string is NULL");
+	PT_RETV_IF(prefix == NULL, NULL, "prefix is NULL");
+
+	char *buffer = NULL;
+	char *ret = NULL;
+
+	if (strlen(string) <= strlen(prefix)) {
+		PT_DEBUG("(%s) is greater than (%s)",string, prefix);
+		return NULL;
+	}
+	if (strncasecmp(string, prefix, strlen(prefix)) == 0) {
+		buffer = strdup(string + strlen(prefix));
+		PT_RETV_IF(buffer == NULL, NULL, "Not enough memory");
+		ret = pt_utils_trim_space(buffer);
+		PT_IF_FREE_MEM(buffer);
+		PT_RETV_IF(ret == NULL, NULL, "Not enough memory");
+		buffer = strdup(ret);
+		PT_RETV_IF(buffer == NULL, NULL, "Not enough memory");
+	}
+
+	return buffer;
+}
+
 int pt_utils_get_mfg_mdl(const char *printer, char **mfg, char **mdl)
 {
 	PT_RETV_IF(printer == NULL || mfg == NULL || mdl == NULL , PT_ERR_FAIL, "Invalid argument");
@@ -333,11 +207,11 @@ int pt_utils_get_mfg_mdl(const char *printer, char **mfg, char **mdl)
 	const char *vendor[3] = {"Samsung", "HP", "Epson"};
 	int 	index 	= 0;
 
-	if (strcasestr(printer, vendor[0]) != 0) {
+	if (strcasestr(printer, vendor[0]) != NULL) {
 		index = 0;
-	} else if (strcasestr(printer, vendor[1]) != 0) {
+	} else if (strcasestr(printer, vendor[1]) != NULL) {
 		index = 1;
-	} else if (strcasestr(printer, vendor[2]) != 0) {
+	} else if (strcasestr(printer, vendor[2]) != NULL) {
 		index = 2;
 	} else {
 		PT_DEBUG("Unsupported printer %s", printer);
@@ -347,30 +221,156 @@ int pt_utils_get_mfg_mdl(const char *printer, char **mfg, char **mdl)
 	*mfg = strdup(vendor[index]);
 	PT_RETV_IF(*mfg == NULL, PT_ERR_NO_MEMORY, "Not enough memory");
 
-	// FIXME
 	char *temp1 = NULL;
-	if (strcasestr(printer, "Hewlett-Packard") != NULL) {
-		temp1 = strdup(printer + strlen("Hewlett-Packard ") + strlen(vendor[index]));
-	} else {
-		temp1 = strdup(printer+strlen(vendor[index]));
+	char *buffer = strdup(printer);
+	PT_RETV_IF(buffer == NULL, PT_ERR_NO_MEMORY, "Not enough memory");
+
+	//Patch unusual HP modelname case
+	if (strcasestr(*mfg, "HP") != NULL) {
+		while(strncasecmp(buffer, "Hewlett-Packard", strlen("Hewlett-Packard")) == 0) {
+			temp1 = pt_utils_trim_prefix(buffer, "Hewlett-Packard");
+			PT_IF_FREE_MEM(buffer);
+			PT_RETV_IF(temp1 == NULL, PT_ERR_INVALID_PARAM, "Invalid value");
+			buffer = temp1;
+		}
 	}
-	char *temp2 = pt_utils_trim_space(temp1);
-	char *temp3 = strdup(temp2);
-	PT_IF_FREE_MEM(temp1);
 
 	// It can include Manufacturer twice in printer name.
-	if (strncasecmp(temp3, vendor[index], strlen(vendor[index])) == 0) {
-		temp1 = strdup(temp3 + strlen(vendor[index]));
-		temp2 = pt_utils_trim_space(temp1);
-		temp3 = strdup(temp2);
-		PT_IF_FREE_MEM(temp1);
+	while(strncasecmp(buffer, vendor[index], strlen(vendor[index])) == 0) {
+		temp1 = pt_utils_trim_prefix(buffer, vendor[index]);
+		PT_IF_FREE_MEM(buffer);
+		PT_RETV_IF(temp1 == NULL, PT_ERR_INVALID_PARAM, "Invalid value");
+		buffer = temp1;
 	}
-
-	*mdl = temp3;
+	*mdl = buffer;
 	return PT_ERR_NONE;
 }
 
-ppd_size_t *pt_utils_paper_size_pts(const char *name)
+static long _pt_get_file_length(const char *filename)
 {
-	return ppdPageSize(ppd, name);
+
+	struct stat file_info;
+	long len;
+
+	if (stat(filename, &file_info)) {
+		PT_DEBUG("File %s stat error", filename);
+		len = 0;
+	} else {
+		PT_DEBUG("File size = %d", file_info.st_size);
+		len = file_info.st_size;
+	}
+
+	return len;
+}
+
+int _pt_filecopy(const char *org_file_path, const char *dest_file_path)
+{
+	FILE *src = NULL;
+	FILE *dest = NULL;
+	char *buffer = NULL;
+	size_t len = 0;
+
+	PT_RETV_IF(org_file_path==NULL, -1, "org_file_path is NULL");
+	PT_RETV_IF(dest_file_path==NULL, -1, "dest_file_path is NULL");
+
+	if (!strcmp(org_file_path, dest_file_path)) {
+		PT_DEBUG("org_file_path is same with dest_file_path");
+		return -1;
+	}
+
+	if ((src  = fopen(org_file_path, "rb")) == NULL) {
+		PT_DEBUG("Failed to open %s",org_file_path);
+		return -1;
+	}
+
+	if (access(dest_file_path, F_OK) == 0) {
+		PT_DEBUG("It exists already");
+		fclose(src);
+		return 0;
+	}
+
+	long src_length = _pt_get_file_length(org_file_path);
+	if (src_length <= 0) {
+		PT_DEBUG("failed to get file length(%ld)",src_length);
+		fclose(src);
+		return -1;
+	}
+
+	if ((dest = fopen(dest_file_path, "wb")) == NULL) {
+		fclose(src);
+		PT_DEBUG("Failed to open %s",dest_file_path);
+		return -1;
+	}
+
+	buffer =	(char *) malloc(MAX_PPDGZ_SIZE);
+	if (buffer == NULL) {
+		fclose(src);
+		fclose(dest);
+		PT_DEBUG("Not enough memory");
+		return -1;
+	}
+
+	while (1) {
+		len = fread(buffer, sizeof(char), MAX_PPDGZ_SIZE, src);
+		if (len < MAX_PPDGZ_SIZE) {
+			if (feof(src) != 0) {
+				fwrite(buffer, sizeof(char), len, dest);
+				break;
+			} else {
+				PT_DEBUG("Failed to write output file");
+				fclose(src);
+				fclose(dest);
+				free(buffer);
+				unlink(dest_file_path);
+				return -1;
+			}
+		}
+		fwrite(buffer, sizeof(char), MAX_PPDGZ_SIZE, dest);
+	}
+	fclose(src);
+	fclose(dest);
+	free(buffer);
+
+	long dest_length = _pt_get_file_length(dest_file_path);
+	if (src_length != dest_length) {
+		PT_DEBUG("file length is diffrent(%ld, %ld)",src_length, dest_length);
+		return -1;
+	}
+
+	return 0;
+}
+
+void pt_utils_remove_files_in(const char *path)
+{
+	PT_RET_IF(path == NULL, "path is NULL");
+	char *cwd;
+	struct dirent *entry;
+	int ret = 1;
+	int iret = -1;
+	DIR *dir;
+
+	cwd = get_current_dir_name();
+
+	errno = 0;
+	ret = chdir(path);
+	if (ret == 0) {
+		dir = opendir(path);
+		while ((entry = readdir(dir)) != NULL) {
+			PT_DEBUG("Remove %s", entry->d_name);
+			iret = remove(entry->d_name);
+			if (iret == -1) {
+				PT_DEBUG("unable to remove %s",entry->d_name);
+			}
+		}
+		closedir(dir);
+
+		iret = chdir(cwd);
+		PT_IF_FREE_MEM(cwd);
+		PT_RET_IF(iret == -1, "unable to chdir");
+	} else {
+		if (errno == ENOENT) {
+			PT_DEBUG("Not existed %s, just skip", path);
+		}
+	}
+	return;
 }

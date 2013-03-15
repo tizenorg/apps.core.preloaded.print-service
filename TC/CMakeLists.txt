@@ -18,7 +18,8 @@ IF(ENABLE_OM_TESTS)
 	SET(SRCS_OM_LIB
 		../src/pt_optionmapping.c
 		../src/pt_optionkeywords.c
-		../src/pt_utils.c)
+		../src/pt_utils.c
+		../src/pt_ppd.c)
 
 	SET(VERSION_MAJOR 1)
 	SET(VERSION "${VERSION_MAJOR}.0.1")

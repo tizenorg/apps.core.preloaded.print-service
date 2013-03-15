@@ -41,18 +41,11 @@ ADD_DEFINITIONS("-DFACTORYFS=\"$ENV{FACTORYFS}\"")
 ADD_DEFINITIONS("-DDATAFS=\"$ENV{DATAFS}\"")
 ADD_DEFINITIONS("-Wall") #enable all warnings
 
-SET(UDEV_RULES_PATH share/print-service/udev-rules)
-SET(UDEV_RULES udev-rules/91-print-service.rules)
-INSTALL(FILES ${UDEV_RULES} DESTINATION ${UDEV_RULES_PATH})
-
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRCS})  
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES SOVERSION ${VERSION_MAJOR})
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES VERSION ${VERSION}) 
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${pkgs_LDFLAGS} -lcups)
-#TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${pkgs_LDFLAGS} -lavahi-client)
-#TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${pkgs_LDFLAGS} -lavahi-common)
-#TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${pkgs_LDFLAGS} -lavahi-core)
 
 CONFIGURE_FILE(${PROJECT_NAME}.pc.in ${PROJECT_NAME}.pc @ONLY)
 
@@ -60,28 +53,17 @@ MESSAGE("destination: ${DESTINATION}")
 INSTALL(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib )
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION lib/pkgconfig)
 INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/pt_api.h DESTINATION "include/print-service")
-#INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/ppd_db.sql DESTINATION /opt/etc)
-#INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/ppd_db_data.sql DESTINATION /opt/etc)
 
 FILE(GLOB samsung_cms "${CMAKE_CURRENT_SOURCE_DIR}/data/samsung/cms/*.cts" )
-INSTALL(FILES ${samsung_cms} DESTINATION /opt/etc/cups/ppd/samsung/cts_files)
+INSTALL(FILES ${samsung_cms} DESTINATION /usr/share/cups/ppd/samsung/cms/)
 MESSAGE("destination: ${DESTINATION}")
 
-#if ppd use case
-#FILE(GLOB generic_ppds "${CMAKE_CURRENT_SOURCE_DIR}/data/Generic/*.ppd.gz" )
-#INSTALL(FILES ${generic_ppds} DESTINATION /opt/etc/cups/ppd/Generic/)
-#FILE(GLOB hp_ppds "${CMAKE_CURRENT_SOURCE_DIR}/data/hp/*.ppd.gz" )
-#INSTALL(FILES ${hp_ppds} DESTINATION /opt/etc/cups/ppd/hp/)
-#FILE(GLOB samsung_ppds "${CMAKE_CURRENT_SOURCE_DIR}/data/samsung/*.ppd.gz" )
-#INSTALL(FILES ${samsung_ppds} DESTINATION /opt/etc/cups/ppd/samsung/)
-#FILE(GLOB epson_ppds "${CMAKE_CURRENT_SOURCE_DIR}/data/epson/*.ppd.gz" )
-#INSTALL(FILES ${epson_ppds} DESTINATION /opt/etc/cups/ppd/epson/)
-#if drvopt use case
 FILE(GLOB hp_ppds "${CMAKE_CURRENT_SOURCE_DIR}/data/hp/*.drv.gz" )
-INSTALL(FILES ${hp_ppds} DESTINATION /opt/etc/cups/ppd/hp/)
+INSTALL(FILES ${hp_ppds} DESTINATION /usr/share/cups/ppd/hp/)
 FILE(GLOB samsung_ppds "${CMAKE_CURRENT_SOURCE_DIR}/data/samsung/*.drv.gz" )
-INSTALL(FILES ${samsung_ppds} DESTINATION /opt/etc/cups/ppd/samsung/)
+INSTALL(FILES ${samsung_ppds} DESTINATION /usr/share/cups/ppd/samsung/)
 FILE(GLOB epson_ppds "${CMAKE_CURRENT_SOURCE_DIR}/data/epson/*.drv.gz" )
-INSTALL(FILES ${epson_ppds} DESTINATION /opt/etc/cups/ppd/epson/)
-ADD_SUBDIRECTORY(getdrv)
+INSTALL(FILES ${epson_ppds} DESTINATION /usr/share/cups/ppd/epson/)
+
+ADD_SUBDIRECTORY(getppd)
 ADD_SUBDIRECTORY(TC)

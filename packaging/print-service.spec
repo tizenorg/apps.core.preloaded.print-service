@@ -3,22 +3,21 @@
 Name:       print-service
 Summary:    print service library
 Version:    1.2.4
-Release:    2
+Release:    14
 Group:      System/Libraries
 License:    Flora Software License
 Source0:    %{name}-%{version}.tar.gz
 BuildRequires: cmake
-#BuildRequires: pkgconfig(avahi-core)
-#BuildRequires: pkgconfig(avahi-client)
 BuildRequires: pkgconfig(dlog)
 BuildRequires: pkgconfig(eina)
 BuildRequires: pkgconfig(ecore)
 BuildRequires: pkgconfig(vconf)
-#BuildRequires: pkgconfig(sqlite3)
+BuildRequires: glib2-devel
 BuildRequires: binutils-devel
 BuildRequires: cups-devel
 BuildRequires: libxml2-devel
 BuildRequires: capi-appfw-application-devel
+Requires: glib2
 Requires: cups
 Requires(post):  /sbin/ldconfig
 Requires(postun):  /sbin/ldconfig
@@ -47,10 +46,6 @@ printer data - ppd, cts, data files
 %setup -q
 
 %build
-#%define CMAKE_TMP_DIR cmake_tmp
-
-#mkdir -p %{CMAKE_TMP_DIR}
-#cd %{CMAKE_TMP_DIR}
 cmake . -DCMAKE_INSTALL_PREFIX=%{_prefix} -DENABLE_OM_TESTS=On
 
 %install
@@ -66,33 +61,53 @@ rm -rf %{buildroot}
 %post
 /sbin/ldconfig
 
-mkdir -p /etc/udev/rules.d
-if ! [ -L /etc/udev/rules.d/91-print-service.rules ]; then
-        ln -s /usr/share/print-service/udev-rules/91-print-service.rules /etc/udev/rules.d/91-print-service.rules
-fi
-#vconftool -i set -t int memory/Device/usbhost/status 0
-
-%post -n print-driver-data
-mkdir -p /opt/dbspace
-if [ -f /opt/dbspace/.ppd.db ]
+if ! [ -d /opt/etc/cups/ppd/hp ]
 then
-    rm -f /opt/dbspace/.ppd*
+	mkdir -p /opt/etc/cups/ppd/hp
 fi
-
-#sqlite3 /opt/dbspace/.ppd.db < /opt/etc/ppd_db.sql
-#sqlite3 /opt/dbspace/.ppd.db < /opt/etc/ppd_db_data.sql
-
-#rm -f /opt/etc/ppd_db.sql
-#rm -f /opt/etc/ppd_db_data.sql
-
-mkdir -p /usr/share/cups/model/samsung
-ln -sf /opt/etc/cups/ppd/samsung/cts_files /usr/share/cups/model/samsung/cms
-
+if ! [ -d /opt/etc/cups/ppd/epson ]
+then
+	mkdir -p /opt/etc/cups/ppd/epson
+fi
+if ! [ -d /opt/etc/cups/ppd/samsung ]
+then
+	mkdir -p /opt/etc/cups/ppd/samsung
+fi
 chown -R 5000:5000 /opt/etc/cups/ppd
 
+if [ -f /usr/lib/rpm-plugins/msm.so ]
+then
+	chsmack -a mobileprint /opt/etc/cups/ppd/
+	chsmack -a mobileprint /opt/etc/cups/ppd/hp
+	chsmack -a mobileprint /opt/etc/cups/ppd/epson
+	chsmack -a mobileprint /opt/etc/cups/ppd/samsung
+	chsmack -t /opt/etc/cups/ppd
+	chsmack -t /opt/etc/cups/ppd/hp
+	chsmack -t /opt/etc/cups/ppd/epson
+	chsmack -t /opt/etc/cups/ppd/samsung
+fi
+
+%post -n print-driver-data
+mkdir -p /usr/share/cups/model/samsung
+ln -sf /usr/share/cups/ppd/samsung/cms /usr/share/cups/model/samsung/cms
+
 %postun -n print-driver-data
-rm /usr/share/cups/model/samsung/cms
-rmdir /usr/share/cups/model/samsung
+if [ -e /usr/share/cups/model/samsung/cms ]
+then
+	rm /usr/share/cups/model/samsung/cms
+fi
+if [ -f /opt/etc/cups/ppd/hp/hp.drv ]
+then
+	rm /opt/etc/cups/ppd/hp/hp.drv
+fi
+if [ -f /opt/etc/cups/ppd/samsung/samsung.drv ]
+then
+	rm /opt/etc/cups/ppd/samsung/samsung.drv
+fi
+if [ -f /opt/etc/cups/ppd/epson/epson.drv ]
+then
+	rm /opt/etc/cups/ppd/epson/epson.drv
+fi
 
 %postun
 /sbin/ldconfig
@@ -163,13 +178,10 @@ chmod 644 /usr/include/print-service/pt_api.h
 %files
 %manifest print-service.manifest
 %defattr(-,root,root,-)
-#%doc LICENSE
+%attr(0755,root,root) %{_bindir}/getppd
 /usr/share/license/%{name}
-%{_bindir}/getdrv
 %{_libdir}/*.so*
 %exclude %{_libdir}/libopmap.so*
-%dir /usr/share/print-service/udev-rules
-/usr/share/print-service/udev-rules/91-print-service.rules
 
 %files devel
 %defattr(-,root,root,-)
@@ -183,24 +195,19 @@ chmod 644 /usr/include/print-service/pt_api.h
 %attr(0755,root,root) %{_bindir}/print-test-opmap.sh
 %{_libdir}/libopmap.so*
 %attr(-,app,app) %{DATADIR}/etc/cups/ppd/hp.list
+%attr(-,app,app) %{DATADIR}/etc/cups/ppd/hp_product.list
 %attr(-,app,app) %{DATADIR}/etc/cups/ppd/epson.list
 %attr(-,app,app) %{DATADIR}/etc/cups/ppd/samsung.list
 
 %files -n print-driver-data
-%manifest printer-driver-data.manifest
+%manifest print-driver-data.manifest
 %defattr(-,root,root,-)
 /usr/share/license/print-driver-data
-#%{DATADIR}/etc/ppd_db.sql
-#%{DATADIR}/etc/ppd_db_data.sql
-%attr(-,app,app) %dir %{DATADIR}/etc/cups/ppd
-%attr(-,app,app) %{DATADIR}/etc/cups/ppd/*
+%dir /usr/share/cups/ppd/
+/usr/share/cups/ppd/*
+#/usr/share/cups/ppd/samsung/cms/*
+%exclude %{DATADIR}/etc/cups/ppd/hp_product.list
 %exclude %{DATADIR}/etc/cups/ppd/hp.list
 %exclude %{DATADIR}/etc/cups/ppd/epson.list
 %exclude %{DATADIR}/etc/cups/ppd/samsung.list
-#%attr(-,app,app) %{DATADIR}/etc/cups/ppd/Generic/*
-#%attr(-,app,app) %{DATADIR}/etc/cups/ppd/hp/*
-#%attr(-,app,app) %{DATADIR}/etc/cups/ppd/samsung/*.ppd.gz
-#%attr(-,app,app) %{DATADIR}/etc/cups/ppd/epson/*
-#%{DATADIR}/etc/cups/ppd/samsung/*.xml
-#%{DATADIR}/etc/cups/ppd/samsung/cts_files/*
 %changelog

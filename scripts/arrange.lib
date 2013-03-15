@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+source search.lib
+
+# Substitute lines containing
+# PCFileName on unique PCFileName
+function rename {
+	local _VENDOR="$1"
+	case "$_VENDOR" in
+	"hp"|"epson"|"samsung")
+		local _PPD
+		local _FNAME
+		_PPD="$(find-ppd-for-vendor "$_VENDOR" "print")"
+		for file in $_PPD;
+		do
+			_FNAME="$(basename $file)"
+			sed -i "s/PCFileName:.*[pP][pP][dD]/PCFileName: \"$_FNAME/g" $file;
+		done
+		;;
+	*) print-error "Unrecognizable vendor" ; exit 1; ;;
+	esac
+}
+
+# Delete some unnecessary
+# strings from ppd files
+function delete-lang {
+	local _VENDOR="$1"
+	case "$_VENDOR" in
+	"hp"|"epson"|"samsung")
+		local _PPD
+		local _FNAME
+		_PPD="$(find-ppd-for-vendor "$_VENDOR" "print")"
+		for file in $_PPD;
+		do
+			cat $file | sed "/\*[a-z][a-z]\./d" |\
+			sed "/\*zh_CN\./d" | sed "/\*zh_TW\./d" |\
+			sed "/\*cupsLanguages:/d" > $file
+		done
+		;;
+	*) print-error "Unrecognizable vendor" ; exit 1; ;;
+	esac
+}
+
+
+# Remove model vendor from
+# ModelName line in ppd files
+function remove-model-vendor {
+	local _VENDOR="$1"
+	local _PPD
+	local _FNAME
+
+	case "$_VENDOR" in
+	"epson")
+		_PPD="$(find-ppd-for-vendor "$_VENDOR" "print")"
+		for file in $_PPD;
+		do
+			sed -i "s/\*ModelName:\(.*\)Epson /\*ModelName:\1/g" $file;
+		done ;;
+	"samsung")
+		_PPD="$(find-ppd-for-vendor "$_VENDOR" "print")"
+		for file in $_PPD;
+		do
+			sed -i "s/\*ModelName:\(.*\)Samsung /\*ModelName:\1/g" $file;
+		done ;;
+	"hp")
+		_PPD="$(find-ppd-for-vendor "$_VENDOR" "print")"
+		for file in $_PPD;
+		do
+			sed -i "s/\*ModelName:\(.*\)HP /\*ModelName:\1/g" $file;
+		done ;;
+	*) print-error "Unrecognizable vendor" ; exit 1; ;;
+	esac
+}
+
+# Delete duplicated ppd files
+function delete-dup {
+	echo "Not yet implemented" > /dev/null;
+	exit 1;
+}
+
+# Remove parallel printers
+function rm-parall-printers {
+	local _VENDOR="$1"
+	local _PPD
+	local _FNAME
+
+	case "$_VENDOR" in
+	"epson")
+		print-error "Deleting of epson parallel printers is not supported.\n" ; exit 1; ;;
+	"samsung")
+		print-error "Deleting of samsung parallel printers is not supported.\n" ; exit 1; ;;
+	"hp")
+		find-parall-printers "hp" | xargs -I rm {} 2> /dev/null;
+		if ! [ "$?" -eq "0" ]; then
+			print-error "Can't remove some files\n";
+		fi ;;
+	*) print-error "Unrecognizable vendor" ; exit 1; ;;
+	esac
+}

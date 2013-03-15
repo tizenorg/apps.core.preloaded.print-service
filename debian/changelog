@@ -1,18 +1,120 @@
-print-service (1.2.4-2) unstable; urgency=low
+print-service (1.2.4-14) unstable; urgency=low
 
-  * Fixed prevent error(NULL-terminated string, RETURN check)
+  * Fixed to check whether printer is unsupporteed
   * Git: magnolia/apps/home/print-service
-  * Tag: print-service_1.2.4-2
+  * Tag: print-service_1.2.4-14
 
- -- GangHeok Kim <gangheok.kim@samsung.com>  Mon, 21 Jan 2013 19:30:11 +0900
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 28 Feb 2013 17:55:28 +0900
 
-print-service (1.2.4-1) unstable; urgency=low
+print-service (1.2.4-13) unstable; urgency=low
+
+  * Moved udev rules to device node module
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-13
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 27 Feb 2013 11:30:28 +0900
+
+print-service (1.2.4-12) unstable; urgency=low
+
+  * Fixed to remove cups temp files before launching cups
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-12
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 22 Feb 2013 16:00:26 +0900
+
+print-service (1.2.4-11) unstable; urgency=low
+
+  * Removed launch code to run com.samsung.usb-printer-detector
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-11
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Mon, 18 Feb 2013 13:32:53 +0900
+
+print-service (1.2.4-10) unstable; urgency=low
+
+  * SMACK rules updated
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-10
+
+ -- Danny Jeongseok Seo <s.seo@samsung.com>  Thu, 14 Feb 2013 22:10:16 +0900
+
+print-service (1.2.4-9) unstable; urgency=low
+
+  * Fixed S1-12188 from 1st Samsung printer IOT by SRR
+  * Fixed option mapping bug by SRR
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-9
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Tue, 05 Feb 2013 20:04:31 +0900
+
+print-service (1.2.4-8) unstable; urgency=low
+
+  * Smack rule updated
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-8
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 01 Feb 2013 13:37:35 +0900
+
+print-service (1.2.4-7) unstable; urgency=low
+
+  * Fixed that HP Printer include Hewlett-Packard in ModelName and Manufacturer
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-7
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 22 Jan 2013 21:27:49 +0900
+
+print-service (1.2.4-6) unstable; urgency=low
+
+  * Moved data files to RO only directory to support FOTA upgrade
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-6
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Tue, 22 Jan 2013 14:57:02 +0900
+
+print-service (1.2.4-5) unstable; urgency=low
 
   * Changed Flora license url
   * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-5
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 17 Jan 2013 18:11:55 +0900
+
+print-service (1.2.4-4) unstable; urgency=low
+
+  * Removed duplicate ppd files which contents are same
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-4
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 17 Jan 2013 17:36:02 +0900
+
+print-service (1.2.4-3) unstable; urgency=low
+
+  * Refactored printer search function
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-3
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Wed, 16 Jan 2013 21:14:11 +0900
+
+print-service (1.2.4-2) unstable; urgency=low
+
+  * Commented out old parsing routine to get progress&page
+  * Fixed PLM issue(P130107-3058)
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-2
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Fri, 11 Jan 2013 22:30:51 +0900
+
+print-service (1.2.4-1) unstable; urgency=low
+
+  * Fixed prevent issue
+    - Resouce leak : Added resource free code
+    - FORWARD_NULL : Added null check routine
+    - SECURE_TEMP : Added umask before mkstemp
+    - BUFFER_SIZE : Fixed string copy sizes
+  * Git: magnolia/apps/home/print-service
   * Tag: print-service_1.2.4-1
 
- -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 17 Jan 2013 18:47:41 +0900
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Thu, 10 Jan 2013 16:19:01 +0900
 
 print-service (1.2.3-49) unstable; urgency=low
 

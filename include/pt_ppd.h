@@ -32,6 +32,7 @@
  *  @param[in] printer the printer entry
  */
 int pt_get_printer_ppd(pt_printer_mgr_t *printer);
+ppd_size_t *pt_utils_paper_size_pts(const char *name);
 
 #endif /*__PT_PPD_H__*/
 

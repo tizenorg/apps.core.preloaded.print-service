@@ -1,8 +1,0 @@
-Source: print-service 
-Section: libs
-Priority: extra
-Maintainer: Wang Gu <wang.gu@samsung.com>
-Build-Depends: autotools-dev
-Standards-Version: 0.1.0
-
-

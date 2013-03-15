@@ -85,6 +85,8 @@
 *Quality 600x600_Draft/Draft: "<</HWResolution[600 600]>>setpagedevice"
 *CloseUI: *Quality
 
+*DefaultResolution: 600dpi
+
 *% =========================================================
 *%  Paper Source
 *% =========================================================
@@ -143,7 +145,7 @@
 *% =========================================================
 *% Use these entries to set paper size unless there is a specific
 *% reason to use PageRegion, such as when using manual Feeder.
-*OpenUI *PageSize/PageSize: PickOne
+*OpenUI *PageSize/Page Size: PickOne
 *OrderDependency: 30 AnySetup *PageSize
 *DefaultPageSize: Letter
 *PageSize Letter/Letter: "<</Policies <</PageSize 7>> /PageSize [612 792] /ImagingBBox null>> setpagedevice"

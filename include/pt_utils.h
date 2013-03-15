@@ -71,21 +71,14 @@ void pt_utils_free_printing_thd_list(Eina_List *list);
 
 /*********** print *****************/
 
-/**
- *	This function let the app register the printer to the server
- *	@return    If success, return PT_ERR_NONE, else return PT_ERR_FAIL
- *	@param[in] printer_name the pointer to the printer's name
- *	@param[in] scheme the pointer to the register's scheme
- *	@param[in] ip_address the pointer to the printer's address
- *	@param[in] ppd_file the pointer to the printer's ppd file
- */
-int  pt_utils_regist_printer(char *printer_name, char *scheme, char *ip_address, char *ppd_file);
-
 char *pt_utils_filename_from_URI(const char *uri);
 
 int __standardization(char *name);
 
 int pt_utils_get_mfg_mdl(const char *printer, char **mfg, char **mdl);
 
+int _pt_filecopy(const char *org_file_path, const char *dest_file_path);
+
+void pt_utils_remove_files_in(const char *path);
 
 #endif /* __PT_UTILS_H__ */

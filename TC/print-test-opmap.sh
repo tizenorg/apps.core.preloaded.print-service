@@ -31,7 +31,7 @@ function print-error {
 function run-opmap-test {
     local _MODEL="$1"
     local _FPATH="$2"
-    local _OUTPUT=`getdrv -r "$_MODEL" -i "$_FPATH" 2> /dev/null`
+    local _OUTPUT=`getppd -m "$_MODEL" -i "$_FPATH" 2> /dev/null`
     if [ "$?" -eq "0" ];
     then
         local _PPD=`echo "$_OUTPUT" | sed "s/.*\/\(.*\)\./\1/"`
@@ -48,10 +48,10 @@ function run-opmap-test {
                 print-fail "[$_MODEL] $_PPD";
             fi
         else
-            print-error "[$_MODEL] getdrv did not extracted file"
+            print-error "[$_MODEL] getppd did not extracted file"
         fi
     else
-        print-error "getdrv extracting failed on $_PPD"
+        print-error "getppd extracting failed on $_PPD"
     fi
 }
 

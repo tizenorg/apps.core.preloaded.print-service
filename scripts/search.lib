@@ -1,0 +1,261 @@
+#!/usr/bin/env bash
+ROOT_DIR=".."
+
+source print.lib
+source hp-depr.list
+
+# Base checking of existing programs
+# and preparing env for executing script
+function base-init {
+
+	if [ "${BASH_VERSINFO[0]}" -lt "4" ]; then
+		printf "[ERROR] This script doesn't support bash version less than 4\n";
+	fi
+
+	command -v xargs > /dev/null;
+	if ! [ "$?" -eq "0" ]; then
+		printf "[ERROR] You must install xargs\n";
+	fi
+
+	command -v realpath > /dev/null;
+	if ! [ "$?" -eq "0" ]; then
+		printf "[ERROR] You must install realpath\n";
+	fi
+
+	command -v sed > /dev/null;
+	if ! [ "$?" -eq "0" ]; then
+		printf "[ERROR] You must install sed\n";
+	fi
+
+	command -v find > /dev/null;
+	if ! [ "$?" -eq "0" ]; then
+		printf "[ERROR] You must install find\n";
+	fi
+
+	command -v grep > /dev/null;
+	if ! [ "$?" -eq "0" ]; then
+		printf "[ERROR] You must install grep\n";
+	fi
+
+	local _HP_DEPR="hp-depr.list"
+
+	if [ -f "$_HP_DEPR" ]; then
+		#source "$_HP_DEPR";
+		echo "Nothing" > /dev/null;
+	else
+		printf "[ERROR] Can't source $_HP_DEPR file\n"
+		exit 1;
+	fi
+
+	SCRIPT_DIR="$(pwd)"
+	ROOT_DIR="$(realpath $SCRIPT_DIR/..)"
+	SEARCH_PATH="$ROOT_DIR/data/org_ppd"
+}
+
+declare -A search_dirs;
+search_dirs["samsung"]="samsung"
+search_dirs["epson"]="epson"
+search_dirs["hp"]="hp"
+
+# Find ModelNames of printers from
+# specific subset of ppd files. These
+# ppd files are got from standard input
+function find-modelname-in-spec-ppds {
+	xargs -0 grep -h '\*ModelName\:' | sed 's/.*\"\(.*\)\"/\1/';
+}
+
+function filter-modelnames {
+	sed 's/^\(apollo\|epson\|hp\|samsung\) \(.*\)/\2/I';
+}
+
+# Find Product of printers from
+# specific subset of ppd files. These
+# ppd files are got from standard input
+function find-product-in-spec-ppds {
+	xargs -0 grep -h '\*Product\:' | sed 's/.*\"\(.*\)\"/\1/';
+}
+
+function find-all-ppd-files-in-dir {
+	local _DIR="$1"
+	local _OPT="$2"
+	local _RETURN="1"
+	local _DIRLIST
+
+	if [ -z "$_DIR" ]; then
+		print-error "You should pass directory for searching ppd files";
+		exit 1;
+	fi
+
+	_DIRLIST="$(eval realpath $_DIR 2> /dev/null)"
+
+	if ! [ "$?" -eq "0" ]; then
+		print-error "realpath returned error state";
+		exit 1;
+	fi
+
+
+	if [ -v _OPT ] && [ "$_OPT" == "print" ];
+	then
+		find $_DIRLIST -iname '*.ppd' -print;
+	else
+		find $_DIRLIST -iname '*.ppd' -print0;
+	fi
+}
+
+function supp-filt-all-modelnames {
+	supp-filt-hp-modelnames;
+	filtered-sam-modelnames;
+	filtered-epson-modelnames;
+}
+
+function supp-filt-hp-modelnames {
+	supported-hp-modelnames | filter-modelnames;
+}
+
+
+# Searches parallel printers in
+# predefined directory/directories
+function find-parall-printers {
+	local _VENDOR="$1"
+	local _PPD
+	local _FILELIST
+
+	local _DIR="$1"
+	local _OPT="$2"
+	local _RETURN="1"
+	local _DIRLIST
+
+	case "$_VENDOR" in
+	"epson")
+		print-error "Listing of epson parallel printers is not supported." ; exit 1; ;;
+	"samsung")
+		print-error "Listing of samsung parallel printers is not supported." ; exit 1; ;;
+	"hp")
+		local _FPATH
+		_DIRLIST="$(eval realpath "$SEARCH_PATH/${search_dirs["hp"]}")"
+		for dir in $_DIRLIST;
+		do
+			for name in "${hp_deprecated[@]}";
+			do
+				_FPATH="$dir/$name.ppd"
+				if [ -f "$_FPATH" ]; then
+					printf "%s\n" "$_FPATH";
+				else
+					print-error "File $_FPATH doesn't exist, but should."
+					print-error "Check hp_deprecated list."
+					exit 1;
+				fi
+			done
+		done ;;
+	*) print-error "Unrecognizable vendor" ; exit 1; ;;
+	esac
+}
+
+function supported-hp-modelnames {
+	local _OUT="$(mktemp)"
+	if [ "$?" -eq "0" ]; then
+		find-parall-printers "hp" > $_OUT
+		find-all-hp-ppd-files | xargs -0 grep --exclude-from=$_OUT -h '\*ModelName\:' |
+		sed 's/.*\"\(.*\)\"/\1/';
+		rm "$_OUT"
+	else
+		printf "Can't create temporary file\n";
+		exit -1;
+	fi
+}
+
+function filtered-all-modelnames {
+	find-modelname-in-all-ppds | filter-modelnames;
+}
+
+function filtered-epson-modelnames {
+	find-modelname-in-epson-ppds | filter-modelnames;
+}
+
+function filtered-sam-modelnames {
+	find-modelname-in-sam-ppds | filter-modelnames;
+}
+
+function filtered-hp-modelnames {
+	find-modelname-in-hp-ppds | filter-modelnames;
+}
+
+function find-modelname-in-sam-ppds {
+	find-all-samsung-ppd-files | find-modelname-in-spec-ppds;
+}
+
+function find-modelname-in-hp-ppds {
+	find-all-hp-ppd-files | find-modelname-in-spec-ppds;
+}
+
+function find-modelname-in-epson-ppds {
+	find-all-epson-ppd-files | find-modelname-in-spec-ppds;
+}
+
+function find-modelname-in-all-ppds {
+	find-all-ppd-files | find-modelname-in-spec-ppds;
+}
+
+function find-product-in-vendor-ppd {
+	local _VENDOR="$1"
+	local _FILELIST
+	local _MODEL
+
+	case "$_VENDOR" in
+	"epson") find-all-epson-ppd-files "print" | find-product-in-spec-ppds ;;
+	"samsung") find-all-samsung-ppd-files "print" | find-product-in-spec-ppds ;;
+	"hp") find-all-hp-ppd-files | find-product-in-spec-ppds ;;
+	*) print-error "Unrecognizable vendor" ; exit 1; ;;
+	esac
+}
+
+function find-ppd-without-modelname {
+	local _VENDOR="$1"
+	local _FILELIST
+	local _MODEL
+
+	case "$_VENDOR" in
+	"epson") _FILELIST="$(find-all-epson-ppd-files "print")" ;;
+	"samsung") _FILELIST="$(find-all-samsung-ppd-files "print")" ;;
+	"hp") _FILELIST="$(find-all-hp-ppd-files "print")" ;;
+	*) print-error "Unrecognizable vendor" ; exit 1; ;;
+	esac
+
+	for file in $_FILELIST;
+	do
+		_MODEL="$(cat $file | grep -h '\*ModelName\:')"
+		if [ -z "$_MODEL" ]; then
+			printf "%s\n" $file;
+		fi
+	done
+}
+
+function find-all-ppd-files {
+	for dir in "${search_dirs[@]}"
+	do
+		find-all-ppd-files-in-dir "$SEARCH_PATH/$dir" "$1";
+	done;
+}
+
+function find-all-hp-ppd-files {
+	find-all-ppd-files-in-dir "$SEARCH_PATH/${search_dirs["hp"]}" "$1";
+}
+
+function find-all-epson-ppd-files {
+	find-all-ppd-files-in-dir "$SEARCH_PATH/${search_dirs["epson"]}" "$1";
+}
+
+function find-all-samsung-ppd-files {
+	find-all-ppd-files-in-dir "$SEARCH_PATH/${search_dirs["samsung"]}" "$1";
+}
+
+function find-ppd-for-vendor {
+	local _VENDOR="$1"
+	case "$_VENDOR" in
+	"hp"|"epson"|"samsung")
+		find-all-ppd-files-in-dir "$SEARCH_PATH/${search_dirs[""$_VENDOR""]}" "$2" ;;
+	*) print-error "Unrecognizable vendor" ; exit 1; ;;
+	esac
+}
+
+base-init;

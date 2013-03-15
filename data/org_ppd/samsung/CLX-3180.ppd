@@ -81,13 +81,15 @@
 *CloseUI: *Screen
 
 *% =========================================================
-*%  Resolution
+*%  Quality
 *% =========================================================
-*OpenUI *Resolution/Quality: PickOne
-*OrderDependency: 10 AnySetup *Resolution
-*DefaultResolution: 600x600_Draft
-*Resolution 600x600_Draft/Draft: "<</HWResolution[600 600]>>setpagedevice"
-*CloseUI: *Resolution
+*OpenUI *Quality/Quality: PickOne
+*OrderDependency: 10 AnySetup *Quality
+*DefaultQuality: 600x600_Draft
+*Quality 600x600_Draft/Draft: "<</HWResolution[600 600]>>setpagedevice"
+*CloseUI: *Quality
+
+*DefaultResolution: 600dpi
 
 *%========================================================
 *% JCLRGB

@@ -58,7 +58,7 @@ struct _counter {
 typedef struct _counter counter;
 
 /* Open ppd file which additional checks */
-ppd_file_t* open_ppd_file(const char *filename);
+ppd_file_t *open_ppd_file(const char *filename);
 
 /* Save current state of choices */
 state save_state();
@@ -82,7 +82,7 @@ void check_selected_choice();
 void check_selected_choice_is_enabled();
 
 /* Check that at all choices in option are disabled */
-void check_all_choices_disabled();
+bool check_all_choices_disabled();
 
 /* Check that at all choices in option papersize are disabled */
 int check_all_choices_disabled_papersize();

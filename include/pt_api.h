@@ -24,6 +24,7 @@
 #define API __attribute__ ((visibility("default")))
 #endif
 
+#include <glib.h>
 #include <eina_list.h>
 #define PT_MAX_LENGTH		512
 
@@ -218,6 +219,7 @@ typedef struct {
 	char mdl[PT_MAX_LENGTH];      				/* mdl name */
 	char mfg[PT_MAX_LENGTH];       				/* mfg name */
 	char ppd[PT_MAX_LENGTH];                    /** ppd file name (with full path) */
+	gboolean is_ppd_exist;
 	int	authrequired;							/** reserved, the type of authentication required for printing:
 												  *  0- none,
 												  *  1- username,password,

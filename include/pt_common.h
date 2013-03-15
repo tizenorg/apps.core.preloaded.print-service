@@ -25,8 +25,6 @@
 #include "pt_api.h"
 #include "pt_utils.h"
 
-#define CUPS_161_UPGRADE
-
 #define MAX_URI_SIZE (512)
 
 typedef struct {
@@ -153,10 +151,6 @@ typedef struct {
 } pt_info_t;
 
 extern pt_info_t *g_pt_info;					/** print info maintained globally */
-
-/* prototypes */
-void pt_parse_options(ppd_file_t *ppd);
-ppd_choice_t *pt_selected_choice(int op);
-ppd_size_t *pt_utils_paper_size_pts(const char *name);
+extern ppd_file_t *ppd;
 
 #endif /* __PRINT_SERVICE_H__ */

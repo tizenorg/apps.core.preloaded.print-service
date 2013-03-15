@@ -85,7 +85,7 @@
 *OpenUI *MediaType/Paper Type: PickOne
 *OrderDependency: 50 AnySetup *MediaType
 *DefaultMediaType: None
-*MediaType None/Printer Default:                   ""
+*MediaType None/Printer Default:                   "<</MediaType (system-default)>> setpagedevice"
 *MediaType Plain/Plain:                            "<</MediaType (Plain)>> setpagedevice"
 *MediaType Thick/Thick:                            "<</MediaType (THICK)>> setpagedevice"
 *MediaType Thin/Thin:                              "<</MediaType (THIN)>> setpagedevice"
@@ -798,7 +798,7 @@
 *% =========================================================
 *% Use these entries to set paper size unless there is a specific
 *% reason to use PageRegion, such as when using manual feed.
-*OpenUI *PageSize/PageSize: PickOne
+*OpenUI *PageSize/Page Size: PickOne
 *OrderDependency: 30 AnySetup *PageSize
 *DefaultPageSize: Letter
 *PageSize Letter/Letter:           "<</PageSize [612 792] /ImagingBBox null>> setpagedevice"

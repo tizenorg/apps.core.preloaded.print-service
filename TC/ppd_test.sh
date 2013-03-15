@@ -1,9 +1,9 @@
 #!/bin/sh
 
 #used in extraction test
-hp_drvgz_path="/opt/etc/cups/ppd/hp/hp.drv.gz"
-samsung_drvgz_path="/opt/etc/cups/ppd/samsung/samsung.drv.gz"
-epson_drvgz_path="/opt/etc/cups/ppd/epson/epson.drv.gz"
+hp_drvgz_path="/usr/share/cups/ppd/hp/hp.drv.gz"
+samsung_drvgz_path="/usr/share/cups/ppd/samsung/samsung.drv.gz"
+epson_drvgz_path="/usr/share/cups/ppd/epson/epson.drv.gz"
 
 hp_drv_path="/opt/etc/cups/ppd/hp/hp.drv"
 samsung_drv_path="/opt/etc/cups/ppd/samsung/samsung.drv"
@@ -34,7 +34,8 @@ function extraction_test(){
 	if [ -f $DRVGZ_PATH ]
 	then
 		rm $DRV_PATH 2>/dev/null
-		gzip -d $DRVGZ_PATH
+		cp $DRVGZ_PATH $DRV_PATH.gz
+		gzip -d $DRV_PATH.gz
 	fi
 
 	if [ -f $DRV_PATH ]
@@ -63,7 +64,7 @@ function extraction_test(){
 		cat $LIST_PATH > $TEMP_PATH/modelnames.txt
 		starttime=$(/bin/date +%s)
 		while read line ; do
-			getdrv -r "$line" -i $DRV_PATH 2>>$TEMP_PATH/$VENDOR"_error.txt" 1>/dev/null
+			getppd -r "$line" -i $DRV_PATH 2>>$TEMP_PATH/$VENDOR"_error.txt" 1>/dev/null
 			if [ ! $? -eq 0 ]
 			then
 				echo "[FAIL] Failed to extract $line"
@@ -174,7 +175,8 @@ VENDOR="hp"
 if [ -f $DRVGZ_PATH ]
 then
 	rm $DRV_PATH 2>/dev/null
-	gzip -d $DRVGZ_PATH
+	cp $DRVGZ_PATH $DRV_PATH.gz
+	gzip -d $DRV_PATH.gz
 fi
 
 if [ -f $DRV_PATH ]
@@ -203,14 +205,16 @@ then
 	cat $PRODUCT_PATH > $TEMP_PATH/products.txt
 	starttime=$(/bin/date +%s)
 	while read line ; do
-		getdrv -p "$line" -i $DRV_PATH 2>>$TEMP_PATH/$VENDOR"_product_error.txt" 1>/dev/null
+		getppd -p "$line" -i $DRV_PATH 2>>$TEMP_PATH/$VENDOR"_product_error.txt" 1>/dev/null
 		if [ ! $? -eq 0 ]
 		then
 			echo "[FAIL] Failed to extract $line"
 			echo "[FAIL] Failed to extract $line" >> $TEMP_PATH/$VENDOR"_product_error.txt"
+		else
+			echo "[SUCCESS] $line" >> $TEMP_PATH/$VENDOR"_product_success.txt"
 		fi
 	done < $TEMP_PATH/products.txt
-	ext_product_num=`ls *.ppd | wc -l 2>/dev/null`
+	ext_product_num=`cat $TEMP_PATH/$VENDOR"_product_success.txt" | wc -l 2>/dev/null`
 	echo "[INFO] Original Product Nums = $org_product_num"
 	echo "[INFO] Extracted Product Nums = $ext_product_num"
 	stoptime=$(/bin/date +%s)

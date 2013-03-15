@@ -1,3 +1,0 @@
-@PREFIX@/include/print-service/*.h
-@PREFIX@/lib/pkgconfig/*
-

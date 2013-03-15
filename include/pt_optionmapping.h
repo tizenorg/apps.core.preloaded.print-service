@@ -36,6 +36,22 @@ typedef struct {
 	const pt_choice_keyword *keywords;
 } KeyActions;
 
+typedef enum _pt_resolution_t {
+	PT_RESOLUTION_LOWEST,
+	PT_RESOLUTION_LOW,
+	PT_RESOLUTION_STANDARD,
+	PT_RESOLUTION_HIGH,
+	PT_RESOLUTION_MAX
+} pt_resolution_t;
+
+typedef struct {
+	const char *keyword;
+	pt_resolution_t weight;
+} pt_resolution_keyword;
+
 #define PT_OPTIONCUBE_TEST_PRINT
+
+ppd_choice_t *pt_selected_choice(int op);
+void pt_parse_options(ppd_file_t *ppd);
 
 #endif // PT_OPTIONMAPPING_H

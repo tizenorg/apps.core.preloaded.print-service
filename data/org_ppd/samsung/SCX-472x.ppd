@@ -39,7 +39,6 @@
 
 *% Base options group ===================================
 *OpenGroup: General/General
-
 *% =========================================================
 *%  Color & Gray Option
 *% =========================================================
@@ -58,6 +57,7 @@
 *MediaType None/Printer Default: "@PJL SET PAPERTYPE = OFF<0A>"
 *MediaType Plain/Plain: "@PJL SET PAPERTYPE = NORMAL<0A>"
 *MediaType Thick/Thick: "@PJL SET PAPERTYPE = THICK<0A>"
+*MediaType 51/Thicker: "@PJL SET PAPERTYPE = THICKER<0A>"
 *MediaType Thin/Thin: "@PJL SET PAPERTYPE = THIN<0A>"
 *MediaType OHP/Transparency: "@PJL SET PAPERTYPE = OHP<0A>"
 *MediaType Bond/Bond: "@PJL SET PAPERTYPE = BOND<0A>"
@@ -69,6 +69,7 @@
 *MediaType Archive/Archive: "@PJL SET PAPERTYPE = ARCHIVE<0A>" 
 *MediaType Recycled/Recycled: "@PJL SET PAPERTYPE = RECYCLED<0A>" 
 *MediaType Envelope/Envelope: "@PJL SET PAPERTYPE = ENV<0A>" 
+*MediaType ThickEnv/Thick Envelope: "@PJL SET PAPERTYPE = THICK_ENV<0A>" 
 *JCLCloseUI: *MediaType
 
 *% =========================================================
@@ -100,6 +101,7 @@
 *TonerSaveMode Save/On: ""
 *TonerSaveMode Standard/Off: ""
 *CloseUI: *TonerSaveMode
+
 *% ==================================================================
 *%  Fine Edge
 *% ==================================================================
@@ -120,6 +122,7 @@
 *JCLDarkness HIGH/Dark: "@PJL SET DENSITY = 5<0A>"
 *JCLDarkness LIGHT/Light: "@PJL SET DENSITY = 1<0A>"
 *JCLCloseUI: *JCLDarkness
+
 
 *% =======================================================================================
 *%  JCLSkipBlankPages
@@ -158,7 +161,7 @@
 *% =========================================================
 *% Use these entries to set paper size unless there is a specific
 *% reason to use PageRegion, such as when using manual Feeder.
-*OpenUI *PageSize/PageSize: PickOne
+*OpenUI *PageSize/Page Size: PickOne
 *OrderDependency: 30 AnySetup *PageSize
 *DefaultPageSize: Letter
 *PageSize Letter/Letter: "<</Policies <</PageSize 7>> /PageSize [612 792] /ImagingBBox null>> setpagedevice"
@@ -176,6 +179,7 @@
 *PageSize C6/C6 Env.: "<</Policies <</PageSize 7>> /PageSize [323 459] /ImagingBBox null>> setpagedevice"
 *PageSize A6/A6: "<</Policies <</PageSize 7>> /PageSize [297 420] /ImagingBBox null>> setpagedevice"
 *PageSize Oficio_S/Oficio : "<</Policies <</PageSize 7>> /PageSize [612 972] /ImagingBBox null>> setpagedevice"
+*PageSize PCard4x6/Post Card 4x6: "<</Policies <</PageSize 7>> /PageSize [288 432] /ImagingBBox null>> setpagedevice"
 *CloseUI: *PageSize
 
 *OpenUI *PageRegion: PickOne
@@ -196,6 +200,7 @@
 *PageRegion C6/C6 Env.: "<</Policies <</PageSize 7>> /PageSize [323 459] /ImagingBBox null>> setpagedevice"
 *PageRegion A6/A6: "<</Policies <</PageSize 7>> /PageSize [297 420] /ImagingBBox null>> setpagedevice"
 *PageRegion Oficio_S/Oficio: "<</Policies <</PageSize 7>> /PageSize [612 972] /ImagingBBox null>> setpagedevice"
+*PageRegion PCard4x6/Post Card 4x6: 	"<</Policies <</PageSize 7>> /PageSize [288 432] /ImagingBBox null>> setpagedevice"
 *CloseUI: *PageRegion
 
 *% These entries provide the imageable areas of the media option keywords
@@ -215,6 +220,7 @@
 *ImageableArea C6/C6 Env.: 						"12.5 12.5 310.5 446.5"
 *ImageableArea A6/A6: 										"12.5 12.5 284.5 407.5"
 *ImageableArea Oficio_S/Oficio: 					"12.5 12.5 599.5 959.5"
+*ImageableArea PCard4x6/Post Card 4x6: 	"12.50 12.50 275.50 419.50"
 
 *DefaultCompression: FBXOR
 *Compression FBXOR/FBXOR: "1"
@@ -237,6 +243,7 @@
 *PaperDimension C6/C6 Env.: "323 459"
 *PaperDimension A6/A6: "297 420"
 *PaperDimension Oficio_S/Oficio: "612 972"
+*PaperDimension PCard4x6/Post Card 4x6: "288 432"
 
 *RequiresPageRegion All: True
 *CloseGroup: General
@@ -262,6 +269,7 @@
 *UIConstraints: *PageSize C6  	    	    *Duplex DuplexNoTumble
 *UIConstraints: *PageSize JB5  	    	    *Duplex DuplexNoTumble
 *UIConstraints: *PageSize B5-ISO  	    *Duplex DuplexNoTumble
+*UIConstraints: *PageSize PCard4x6  	    *Duplex DuplexNoTumble
 
 *UIConstraints: *Duplex DuplexNoTumble 	    *PageSize Executive
 *UIConstraints: *Duplex DuplexNoTumble 	    *PageSize A5
@@ -273,6 +281,7 @@
 *UIConstraints: *Duplex DuplexNoTumble 	    *PageSize C6
 *UIConstraints: *Duplex DuplexNoTumble 	    *PageSize JB5
 *UIConstraints: *Duplex DuplexNoTumble 	    *PageSize B5-ISO
+*UIConstraints: *Duplex DuplexNoTumble 	    *PageSize PCard4x6
 
 *UIConstraints: *PageSize Executive  	    *Duplex DuplexTumble
 *UIConstraints: *PageSize A5  		    *Duplex DuplexTumble
@@ -284,6 +293,7 @@
 *UIConstraints: *PageSize C6  	   	    *Duplex DuplexTumble
 *UIConstraints: *PageSize JB5  	   	    *Duplex DuplexTumble
 *UIConstraints: *PageSize B5-ISO  	    *Duplex DuplexTumble
+*UIConstraints: *PageSize PCard4x6  	    *Duplex DuplexTumble
 
 *UIConstraints: *Duplex DuplexTumble 	    *PageSize Executive
 *UIConstraints: *Duplex DuplexTumble 	    *PageSize A5
@@ -295,6 +305,7 @@
 *UIConstraints: *Duplex DuplexTumble 	    *PageSize C6
 *UIConstraints: *Duplex DuplexTumble 	    *PageSize JB5
 *UIConstraints: *Duplex DuplexTumble 	    *PageSize B5-ISO
+*UIConstraints: *Duplex DuplexTumble 	    *PageSize PCard4x6
 
 *% =========================================================
 *%  Duplex - PageRegion
@@ -310,6 +321,7 @@
 *UIConstraints: *PageRegion C6  	    *Duplex DuplexNoTumble
 *UIConstraints: *PageRegion JB5  	    *Duplex DuplexNoTumble
 *UIConstraints: *PageRegion B5-ISO  	    *Duplex DuplexNoTumble
+*UIConstraints: *PageRegion PCard4x6 	    *Duplex DuplexNoTumble
 
 *UIConstraints: *Duplex DuplexNoTumble 	    *PageRegion Executive
 *UIConstraints: *Duplex DuplexNoTumble 	    *PageRegion A5
@@ -321,6 +333,7 @@
 *UIConstraints: *Duplex DuplexNoTumble 	    *PageRegion C6
 *UIConstraints: *Duplex DuplexNoTumble 	    *PageRegion JB5
 *UIConstraints: *Duplex DuplexNoTumble 	    *PageRegion B5-ISO
+*UIConstraints: *Duplex DuplexNoTumble 	    *PageRegion PCard4x6
 
 *UIConstraints: *PageRegion Executive       *Duplex DuplexTumble
 *UIConstraints: *PageRegion A5  	    *Duplex DuplexTumble
@@ -332,6 +345,7 @@
 *UIConstraints: *PageRegion C6  	    *Duplex DuplexTumble
 *UIConstraints: *PageRegion JB5  	    *Duplex DuplexTumble
 *UIConstraints: *PageRegion B5-ISO  	    *Duplex DuplexTumble
+*UIConstraints: *PageRegion PCard4x6 	    *Duplex DuplexTumble
 
 *UIConstraints: *Duplex DuplexTumble 	    *PageRegion Executive
 *UIConstraints: *Duplex DuplexTumble 	    *PageRegion A5
@@ -343,14 +357,19 @@
 *UIConstraints: *Duplex DuplexTumble 	    *PageRegion C6
 *UIConstraints: *Duplex DuplexTumble 	    *PageRegion JB5
 *UIConstraints: *Duplex DuplexTumble 	    *PageRegion B5-ISO
+*UIConstraints: *Duplex DuplexTumble 	    *PageRegion PCard4x6
 
 *% =========================================================
 *%  Duplex - MediaType
 *% =========================================================
+*UIConstraints: *MediaType 51          *Duplex DuplexNoTumble
+*UIConstraints: *MediaType 51          *Duplex DuplexTumble
 *UIConstraints: *MediaType Cotton           *Duplex DuplexTumble
 *UIConstraints: *MediaType Cotton           *Duplex DuplexNoTumble
 *UIConstraints: *MediaType Envelope         *Duplex DuplexNoTumble
 *UIConstraints: *MediaType Envelope         *Duplex DuplexTumble
+*UIConstraints: *MediaType ThickEnv         *Duplex DuplexNoTumble
+*UIConstraints: *MediaType ThickEnv         *Duplex DuplexTumble
 *UIConstraints: *MediaType OHP   	    *Duplex DuplexNoTumble
 *UIConstraints: *MediaType OHP    	    *Duplex DuplexTumble
 *UIConstraints: *MediaType Labels           *Duplex DuplexNoTumble
@@ -367,10 +386,14 @@
 *UIConstraints: *MediaType Bond       *Duplex DuplexTumble
 
 
+*UIConstraints: *Duplex DuplexNoTumble      *MediaType 51
+*UIConstraints: *Duplex DuplexTumble        *MediaType 51
 *UIConstraints: *Duplex DuplexNoTumble      *MediaType Cotton
 *UIConstraints: *Duplex DuplexTumble        *MediaType Cotton
 *UIConstraints: *Duplex DuplexNoTumble      *MediaType Envelope
 *UIConstraints: *Duplex DuplexTumble        *MediaType Envelope
+*UIConstraints: *Duplex DuplexNoTumble      *MediaType ThickEnv
+*UIConstraints: *Duplex DuplexTumble        *MediaType ThickEnv
 *UIConstraints: *Duplex DuplexNoTumble      *MediaType OHP
 *UIConstraints: *Duplex DuplexTumble        *MediaType OHP
 *UIConstraints: *Duplex DuplexNoTumble      *MediaType Labels
@@ -390,15 +413,19 @@
 *%  InputSlot(Upper) - MediaType
 *% =========================================================
 
+*UIConstraints: *InputSlot Upper           *MediaType 51
 *UIConstraints: *InputSlot Upper           *MediaType Cotton
 *UIConstraints: *InputSlot Upper           *MediaType Envelope
+*UIConstraints: *InputSlot Upper           *MediaType ThickEnv
 *UIConstraints: *InputSlot Upper           *MediaType OHP
 *UIConstraints: *InputSlot Upper           *MediaType Labels
 *UIConstraints: *InputSlot Upper           *MediaType Color	                    
 *UIConstraints: *InputSlot Upper           *MediaType Preprinted       
 
+*UIConstraints: *MediaType 51          *InputSlot Upper
 *UIConstraints: *MediaType Cotton           *InputSlot Upper
 *UIConstraints: *MediaType Envelope         *InputSlot Upper
+*UIConstraints: *MediaType ThickEnv         *InputSlot Upper
 *UIConstraints: *MediaType OHP     	    *InputSlot Upper
 *UIConstraints: *MediaType Labels           *InputSlot Upper
 *UIConstraints: *MediaType Color            *InputSlot Upper
@@ -413,6 +440,7 @@
 *UIConstraints: *PageSize COM10			*MediaType None
 *UIConstraints: *PageSize COM10			*MediaType Plain
 *UIConstraints: *PageSize COM10			*MediaType Thick
+*UIConstraints: *PageSize COM10			*MediaType 51
 *UIConstraints: *PageSize COM10			*MediaType Thin
 *UIConstraints: *PageSize COM10			*MediaType Bond
 *UIConstraints: *PageSize COM10			*MediaType Color
@@ -427,6 +455,7 @@
 *UIConstraints: *MediaType None        		*PageSize COM10			
 *UIConstraints: *MediaType Plain       		*PageSize COM10			
 *UIConstraints: *MediaType Thick       		*PageSize COM10			
+*UIConstraints: *MediaType 51     		*PageSize COM10			
 *UIConstraints: *MediaType Thin        		*PageSize COM10			
 *UIConstraints: *MediaType Bond        		*PageSize COM10			
 *UIConstraints: *MediaType Color       		*PageSize COM10			
@@ -442,6 +471,7 @@
 *UIConstraints: *PageSize DL			*MediaType None
 *UIConstraints: *PageSize DL			*MediaType Plain
 *UIConstraints: *PageSize DL			*MediaType Thick
+*UIConstraints: *PageSize DL			*MediaType 51
 *UIConstraints: *PageSize DL			*MediaType Thin
 *UIConstraints: *PageSize DL			*MediaType Bond
 *UIConstraints: *PageSize DL			*MediaType Color
@@ -456,6 +486,7 @@
 *UIConstraints: *MediaType None        		*PageSize DL			
 *UIConstraints: *MediaType Plain       		*PageSize DL			
 *UIConstraints: *MediaType Thick       		*PageSize DL			
+*UIConstraints: *MediaType 51     		*PageSize DL	
 *UIConstraints: *MediaType Thin        		*PageSize DL			
 *UIConstraints: *MediaType Bond        		*PageSize DL			
 *UIConstraints: *MediaType Color       		*PageSize DL			
@@ -471,6 +502,7 @@
 *UIConstraints: *PageSize C5			*MediaType None
 *UIConstraints: *PageSize C5			*MediaType Plain
 *UIConstraints: *PageSize C5			*MediaType Thick
+*UIConstraints: *PageSize C5			*MediaType 51
 *UIConstraints: *PageSize C5			*MediaType Thin
 *UIConstraints: *PageSize C5			*MediaType Bond
 *UIConstraints: *PageSize C5			*MediaType Color
@@ -485,6 +517,7 @@
 *UIConstraints: *MediaType None        		*PageSize C5			
 *UIConstraints: *MediaType Plain       		*PageSize C5			
 *UIConstraints: *MediaType Thick       		*PageSize C5			
+*UIConstraints: *MediaType 51    		*PageSize C5		
 *UIConstraints: *MediaType Thin        		*PageSize C5			
 *UIConstraints: *MediaType Bond        		*PageSize C5			
 *UIConstraints: *MediaType Color       		*PageSize C5			
@@ -500,6 +533,7 @@
 *UIConstraints: *PageSize C6			*MediaType None
 *UIConstraints: *PageSize C6			*MediaType Plain
 *UIConstraints: *PageSize C6			*MediaType Thick
+*UIConstraints: *PageSize C6			*MediaType 51
 *UIConstraints: *PageSize C6			*MediaType Thin
 *UIConstraints: *PageSize C6			*MediaType Bond
 *UIConstraints: *PageSize C6			*MediaType Color
@@ -515,6 +549,7 @@
 *UIConstraints: *MediaType None        		*PageSize C6			
 *UIConstraints: *MediaType Plain       		*PageSize C6			
 *UIConstraints: *MediaType Thick       		*PageSize C6			
+*UIConstraints: *MediaType 51    		*PageSize C6		
 *UIConstraints: *MediaType Thin        		*PageSize C6			
 *UIConstraints: *MediaType Bond        		*PageSize C6			
 *UIConstraints: *MediaType Color       		*PageSize C6			
@@ -530,6 +565,7 @@
 *UIConstraints: *PageSize Monarch		*MediaType None        	
 *UIConstraints: *PageSize Monarch		*MediaType Plain       	
 *UIConstraints: *PageSize Monarch		*MediaType Thick       	
+*UIConstraints: *PageSize Monarch		*MediaType 51
 *UIConstraints: *PageSize Monarch		*MediaType Thin        	
 *UIConstraints: *PageSize Monarch		*MediaType Bond        	
 *UIConstraints: *PageSize Monarch		*MediaType Color       	
@@ -544,6 +580,7 @@
 *UIConstraints: *MediaType None        		*PageSize Monarch	
 *UIConstraints: *MediaType Plain       		*PageSize Monarch	
 *UIConstraints: *MediaType Thick       		*PageSize Monarch	
+*UIConstraints: *MediaType 51     		*PageSize Monarch	
 *UIConstraints: *MediaType Thin        		*PageSize Monarch	
 *UIConstraints: *MediaType Bond        		*PageSize Monarch	
 *UIConstraints: *MediaType Color       		*PageSize Monarch	
@@ -563,6 +600,7 @@
 *UIConstraints: *PageRegion COM10		*MediaType None
 *UIConstraints: *PageRegion COM10		*MediaType Plain
 *UIConstraints: *PageRegion COM10		*MediaType Thick
+*UIConstraints: *PageRegion COM10		*MediaType 51
 *UIConstraints: *PageRegion COM10		*MediaType Thin
 *UIConstraints: *PageRegion COM10		*MediaType Bond
 *UIConstraints: *PageRegion COM10		*MediaType Color
@@ -577,6 +615,7 @@
 *UIConstraints: *MediaType None        		*PageRegion COM10			
 *UIConstraints: *MediaType Plain       		*PageRegion COM10			
 *UIConstraints: *MediaType Thick       		*PageRegion COM10			
+*UIConstraints: *MediaType 51     		*PageRegion COM10	
 *UIConstraints: *MediaType Thin        		*PageRegion COM10			
 *UIConstraints: *MediaType Bond        		*PageRegion COM10			
 *UIConstraints: *MediaType Color       		*PageRegion COM10			
@@ -592,6 +631,7 @@
 *UIConstraints: *PageRegion DL		*MediaType None
 *UIConstraints: *PageRegion DL		*MediaType Plain
 *UIConstraints: *PageRegion DL		*MediaType Thick
+*UIConstraints: *PageRegion DL		*MediaType 51
 *UIConstraints: *PageRegion DL		*MediaType Thin
 *UIConstraints: *PageRegion DL		*MediaType Bond
 *UIConstraints: *PageRegion DL		*MediaType Color
@@ -606,6 +646,7 @@
 *UIConstraints: *MediaType None        		*PageRegion DL			
 *UIConstraints: *MediaType Plain       		*PageRegion DL			
 *UIConstraints: *MediaType Thick       		*PageRegion DL			
+*UIConstraints: *MediaType 51   		*PageRegion DL			
 *UIConstraints: *MediaType Thin        		*PageRegion DL			
 *UIConstraints: *MediaType Bond        		*PageRegion DL			
 *UIConstraints: *MediaType Color       		*PageRegion DL			
@@ -621,6 +662,7 @@
 *UIConstraints: *PageRegion C5		*MediaType None
 *UIConstraints: *PageRegion C5		*MediaType Plain
 *UIConstraints: *PageRegion C5		*MediaType Thick
+*UIConstraints: *PageRegion C5		*MediaType 51
 *UIConstraints: *PageRegion C5		*MediaType Thin
 *UIConstraints: *PageRegion C5		*MediaType Bond
 *UIConstraints: *PageRegion C5		*MediaType Color
@@ -635,6 +677,7 @@
 *UIConstraints: *MediaType None        		*PageRegion C5			
 *UIConstraints: *MediaType Plain       		*PageRegion C5			
 *UIConstraints: *MediaType Thick       		*PageRegion C5			
+*UIConstraints: *MediaType 51     		*PageRegion C5			
 *UIConstraints: *MediaType Thin        		*PageRegion C5			
 *UIConstraints: *MediaType Bond        		*PageRegion C5			
 *UIConstraints: *MediaType Color       		*PageRegion C5			
@@ -650,6 +693,7 @@
 *UIConstraints: *PageRegion C6		*MediaType None
 *UIConstraints: *PageRegion C6		*MediaType Plain
 *UIConstraints: *PageRegion C6		*MediaType Thick
+*UIConstraints: *PageRegion C6		*MediaType 51
 *UIConstraints: *PageRegion C6		*MediaType Thin
 *UIConstraints: *PageRegion C6		*MediaType Bond
 *UIConstraints: *PageRegion C6		*MediaType Color
@@ -664,6 +708,7 @@
 *UIConstraints: *MediaType None        		*PageRegion C6			
 *UIConstraints: *MediaType Plain       		*PageRegion C6			
 *UIConstraints: *MediaType Thick       		*PageRegion C6			
+*UIConstraints: *MediaType 51     		*PageRegion C6
 *UIConstraints: *MediaType Thin        		*PageRegion C6			
 *UIConstraints: *MediaType Bond        		*PageRegion C6			
 *UIConstraints: *MediaType Color       		*PageRegion C6			
@@ -679,6 +724,7 @@
 *UIConstraints: *PageRegion Monarch		*MediaType None        	
 *UIConstraints: *PageRegion Monarch		*MediaType Plain       	
 *UIConstraints: *PageRegion Monarch		*MediaType Thick       	
+*UIConstraints: *PageRegion Monarch		*MediaType 51
 *UIConstraints: *PageRegion Monarch		*MediaType Thin        	
 *UIConstraints: *PageRegion Monarch		*MediaType Bond        	
 *UIConstraints: *PageRegion Monarch		*MediaType Color       	
@@ -693,6 +739,7 @@
 *UIConstraints: *MediaType None        		*PageRegion Monarch	
 *UIConstraints: *MediaType Plain       		*PageRegion Monarch	
 *UIConstraints: *MediaType Thick       		*PageRegion Monarch	
+*UIConstraints: *MediaType 51     		*PageRegion Monarch
 *UIConstraints: *MediaType Thin        		*PageRegion Monarch	
 *UIConstraints: *MediaType Bond        		*PageRegion Monarch	
 *UIConstraints: *MediaType Color       		*PageRegion Monarch	
@@ -704,6 +751,77 @@
 *UIConstraints: *MediaType Cotton      		*PageRegion Monarch
 *UIConstraints: *MediaType Archive     		*PageRegion Monarch
 
+*% =========================================================
+*%  PostCard 4x6(PageSize) - MediaType
+*% =========================================================
+*% PostCard 4x6
+*UIConstraints: *PageSize PCard4x6		*MediaType None        	
+*UIConstraints: *PageSize PCard4x6		*MediaType Plain       	
+*UIConstraints: *PageSize PCard4x6		*MediaType Thick       	
+*UIConstraints: *PageSize PCard4x6		*MediaType 51
+*UIConstraints: *PageSize PCard4x6		*MediaType Thin        	
+*UIConstraints: *PageSize PCard4x6		*MediaType Bond        	
+*UIConstraints: *PageSize PCard4x6		*MediaType Color       	
+*UIConstraints: *PageSize PCard4x6		*MediaType Labels      	
+*UIConstraints: *PageSize PCard4x6		*MediaType OHP	
+*UIConstraints: *PageSize PCard4x6		*MediaType Preprinted  	
+*UIConstraints: *PageSize PCard4x6		*MediaType Recycled    	
+*UIConstraints: *PageSize PCard4x6		*MediaType Cotton      	
+*UIConstraints: *PageSize PCard4x6		*MediaType Archive      	
+*UIConstraints: *PageSize PCard4x6		*MediaType Envelope
+*UIConstraints: *PageSize PCard4x6		*MediaType ThickEnv
+
+*UIConstraints: *MediaType None        		*PageSize PCard4x6	
+*UIConstraints: *MediaType Plain       		*PageSize PCard4x6	
+*UIConstraints: *MediaType Thick       		*PageSize PCard4x6	
+*UIConstraints: *MediaType 51     		*PageSize PCard4x6
+*UIConstraints: *MediaType Thin        		*PageSize PCard4x6	
+*UIConstraints: *MediaType Bond        		*PageSize PCard4x6	
+*UIConstraints: *MediaType Color       		*PageSize PCard4x6	
+*UIConstraints: *MediaType Labels      		*PageSize PCard4x6	
+*UIConstraints: *MediaType OHP			*PageSize PCard4x6	
+*UIConstraints: *MediaType Preprinted  		*PageSize PCard4x6	
+*UIConstraints: *MediaType Recycled    		*PageSize PCard4x6	
+*UIConstraints: *MediaType Cotton      		*PageSize PCard4x6
+*UIConstraints: *MediaType Archive     		*PageSize PCard4x6
+*UIConstraints: *MediaType Envelope		*PageSize PCard4x6
+*UIConstraints: *MediaType ThickEnv		*PageSize PCard4x6
+
+*% =========================================================
+*%  PostCard 4x6(PageRegion) - MediaType
+*% =========================================================
+*% PostCard 4x6
+*UIConstraints: *PageSize PCard4x6		*MediaType None        	
+*UIConstraints: *PageSize PCard4x6		*MediaType Plain       	
+*UIConstraints: *PageSize PCard4x6		*MediaType Thick       	
+*UIConstraints: *PageSize PCard4x6		*MediaType 51
+*UIConstraints: *PageSize PCard4x6		*MediaType Thin        	
+*UIConstraints: *PageSize PCard4x6		*MediaType Bond        	
+*UIConstraints: *PageSize PCard4x6		*MediaType Color       	
+*UIConstraints: *PageSize PCard4x6		*MediaType Labels      	
+*UIConstraints: *PageSize PCard4x6		*MediaType OHP	
+*UIConstraints: *PageSize PCard4x6		*MediaType Preprinted  	
+*UIConstraints: *PageSize PCard4x6		*MediaType Recycled    	
+*UIConstraints: *PageSize PCard4x6		*MediaType Cotton      	
+*UIConstraints: *PageSize PCard4x6		*MediaType Archive      	
+*UIConstraints: *PageSize PCard4x6		*MediaType Envelope
+*UIConstraints: *PageSize PCard4x6		*MediaType ThickEnv
+
+*UIConstraints: *MediaType None        		*PageSize PCard4x6	
+*UIConstraints: *MediaType Plain       		*PageSize PCard4x6	
+*UIConstraints: *MediaType Thick       		*PageSize PCard4x6	
+*UIConstraints: *MediaType 51     		*PageSize PCard4x6
+*UIConstraints: *MediaType Thin        		*PageSize PCard4x6	
+*UIConstraints: *MediaType Bond        		*PageSize PCard4x6	
+*UIConstraints: *MediaType Color       		*PageSize PCard4x6	
+*UIConstraints: *MediaType Labels      		*PageSize PCard4x6	
+*UIConstraints: *MediaType OHP			*PageSize PCard4x6	
+*UIConstraints: *MediaType Preprinted  		*PageSize PCard4x6	
+*UIConstraints: *MediaType Recycled    		*PageSize PCard4x6	
+*UIConstraints: *MediaType Cotton      		*PageSize PCard4x6
+*UIConstraints: *MediaType Archive     		*PageSize PCard4x6
+*UIConstraints: *MediaType Envelope		*PageSize PCard4x6
+*UIConstraints: *MediaType ThickEnv		*PageSize PCard4x6
 
 *% =========================================================
 *%  PageSize - Envelope(MediaType)
@@ -754,6 +872,56 @@
 *UIConstraints: *MediaType Envelope		*PageRegion Executive
 *UIConstraints: *MediaType Envelope             *PageRegion A5
 *UIConstraints: *MediaType Envelope             *PageRegion A6
+
+*% =========================================================
+*%  PageSize - Thick Envelope(MediaType)
+*% =========================================================
+*UIConstraints: *PageSize Letter		*MediaType ThickEnv
+*UIConstraints: *PageSize Legal			*MediaType ThickEnv
+*UIConstraints: *PageSize Oficio_S		*MediaType ThickEnv
+*UIConstraints: *PageSize Folio			*MediaType ThickEnv
+*UIConstraints: *PageSize A4			*MediaType ThickEnv
+*UIConstraints: *PageSize B5-ISO		*MediaType ThickEnv
+*UIConstraints: *PageSize JB5			*MediaType ThickEnv
+*UIConstraints: *PageSize Executive		*MediaType ThickEnv
+*UIConstraints: *PageSize A5                    *MediaType ThickEnv
+*UIConstraints: *PageSize A6                    *MediaType ThickEnv
+
+*UIConstraints: *MediaType ThickEnv		*PageSize Letter		
+*UIConstraints: *MediaType ThickEnv		*PageSize Legal			
+*UIConstraints: *MediaType ThickEnv		*PageSize Oficio_S		
+*UIConstraints: *MediaType ThickEnv		*PageSize Folio		
+*UIConstraints: *MediaType ThickEnv		*PageSize A4			
+*UIConstraints: *MediaType ThickEnv		*PageSize B5-ISO		
+*UIConstraints: *MediaType ThickEnv		*PageSize JB5		
+*UIConstraints: *MediaType ThickEnv		*PageSize Executive		
+*UIConstraints: *MediaType ThickEnv             *PageSize A5
+*UIConstraints: *MediaType ThickEnv             *PageSize A6
+
+*% =========================================================
+*%  PageRegion - Thick ThickEnv(MediaType)
+*% =========================================================
+*UIConstraints: *PageRegion Letter		*MediaType ThickEnv
+*UIConstraints: *PageRegion Legal		*MediaType ThickEnv
+*UIConstraints: *PageRegion Oficio_S		*MediaType ThickEnv
+*UIConstraints: *PageRegion Folio		*MediaType ThickEnv
+*UIConstraints: *PageRegion A4			*MediaType ThickEnv
+*UIConstraints: *PageRegion B5-ISO		*MediaType ThickEnv
+*UIConstraints: *PageRegion JB5			*MediaType ThickEnv
+*UIConstraints: *PageRegion Executive		*MediaType ThickEnv
+*UIConstraints: *PageRegion A5                  *MediaType ThickEnv
+*UIConstraints: *PageRegion A6                  *MediaType ThickEnv
+
+*UIConstraints: *MediaType ThickEnv		*PageRegion Letter		
+*UIConstraints: *MediaType ThickEnv		*PageRegion Legal			
+*UIConstraints: *MediaType ThickEnv		*PageRegion Oficio_S		
+*UIConstraints: *MediaType ThickEnv		*PageRegion Folio		
+*UIConstraints: *MediaType ThickEnv		*PageRegion A4			
+*UIConstraints: *MediaType ThickEnv		*PageRegion B5-ISO		
+*UIConstraints: *MediaType ThickEnv		*PageRegion JB5		
+*UIConstraints: *MediaType ThickEnv		*PageRegion Executive
+*UIConstraints: *MediaType ThickEnv             *PageRegion A5
+*UIConstraints: *MediaType ThickEnv             *PageRegion A6
 
 *% =========================================================
 *%  PageSize - OHP(MediaType)
@@ -827,6 +995,8 @@
 
 *UIConstraints: *JCLSkipBlankPages True		*ReverseDuplex RDuplexNoTumble
 *UIConstraints: *JCLSkipBlankPages True		*ReverseDuplex RDuplexTumble
+
+
 
 *DefaultFont: Courier
 *Font AvantGarde-Book: Standard "(001.006S)" Standard ROM

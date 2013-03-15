@@ -21,6 +21,8 @@
 #include <stdbool.h>
 #include "pt_debug.h"
 #include "pt_common.h"
+#include "pt_utils.h"
+#include "pt_ppd.h"
 #include "pt_optionmapping.h"
 
 typedef ppd_choice_t *OPTIONCUBE[PT_QUALITY_MAX][PT_PAPER_MAX][PT_GRAYSCALE_MAX];
@@ -279,90 +281,46 @@ static void parse_mediatype(ppd_option_t *opt)
 
 static void parse_resolution(ppd_option_t *opt)
 {
-	int rv;
-	int x;
-	int y;
-	char qlty[8];
-
 	int i;
+	int j = PT_RESOLUTION_HIGH;
+	ppd_choice_t *resolutions[PT_RESOLUTION_MAX];
+
+	for (i = 0; i < PT_RESOLUTION_MAX; i++) {
+		resolutions[i] = NULL;
+	}
+
 	for (i = 0; i < opt->num_choices; i++) {
-		rv = sscanf(opt->choices[i].choice, "%d%d_%8s", &x, &y, qlty);
-		switch (rv) {
-		case 3:
-			if (isdigit((int)qlty[0]) != 0) {
-				if (strcasecmp("4", qlty) == 0) {
-					optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-					aQuality = PT_QUALITY_HIGH;
-				} else if (strcasecmp("2", qlty) == 0) {
-					optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-				} else if (strcasecmp("1", qlty) == 0) {
-					optionCube[0][PT_QUALITY_DRAFT][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-				}
-			} else if (isalpha((int)qlty[0]) != 0) {
-				if (strcasecmp("Best", qlty) == 0) {
-					optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-					aQuality = PT_QUALITY_HIGH;
-				} else if (strcasecmp("Normal", qlty) == 0) {
-					optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-				} else if (strcasecmp("Draft", qlty) == 0) {
-					optionCube[0][PT_QUALITY_DRAFT][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-				}
+		const pt_resolution_keyword *lookingup = pt_resoultion_words;
+		while(lookingup->keyword != NULL) {
+			if(strcasecmp(lookingup->keyword, opt->choices[i].choice) == 0) {
+				resolutions[lookingup->weight] = &opt->choices[i];
+				break;
+			} else {
+				lookingup++;
 			}
-			break;
-		case 2:
-			if (x > y) {
-				if (y == 600) {
-					if (optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_ANY] == NULL) {
-						optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-						aQuality = PT_QUALITY_HIGH;
-					} else {
-						optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-					}
-				}
-			} else if (x == y) { // it is important to check that all choices is available
-				if (x == 1200) {
-					if (optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_ANY] != NULL) {
-						optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = \
-								optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_ANY];
-					}
-					optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-					aQuality = PT_QUALITY_HIGH;
-				} else if (x == 600) {
-					optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-				} else if (x == 300) {
-					optionCube[0][PT_QUALITY_DRAFT][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-				}
-			}
-			break;
-		case 1:
-			if (x == 1200) {
-				optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-				aQuality = PT_QUALITY_HIGH;
-			} else if (x == 600) {
-				optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-			} else if (x == 300) {
-				optionCube[0][PT_QUALITY_DRAFT][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-			}
-			break;
-		case 0:
-			rv = sscanf(opt->choices[i].choice, "%8s", qlty);
-			if (isalpha(qlty[0]) != 0) {
-				if (strcasecmp("Best", qlty) == 0) {
-					optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-					aQuality = PT_QUALITY_HIGH;
-				} else if (strcasecmp("Normal", qlty) == 0) {
-					optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-				} else if (strcasecmp("Draft", qlty) == 0) {
-					optionCube[0][PT_QUALITY_DRAFT][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-				}
-			}
-			break;
-		default:
-			break;
 		}
 	}
 
-	return;
+	for (i = PT_QUALITY_HIGH; i >= PT_QUALITY_DRAFT; i--) {
+		while(resolutions[j] == NULL && j >= 0) {
+			j--;
+		}
+		if (j < 0) {
+			break;
+		}
+		optionCube[0][i][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = resolutions[j];
+		j--;
+	}
+
+	aQuality = PT_QUALITY_ANY;
+	for(i = PT_QUALITY_DRAFT; i < PT_QUALITY_ANY; i++) {
+		if (optionCube[0][i][PT_PAPER_ANY][PT_GRAYSCALE_ANY] != NULL) {
+			if ((strcasecmp(optionCube[0][i][PT_PAPER_ANY][PT_GRAYSCALE_ANY]->choice, opt->defchoice) == 0)) {
+				aQuality = i;
+				break;
+			}
+		}
+	}
 }
 
 static void parse_ink(ppd_option_t *opt)
@@ -478,14 +436,17 @@ static void parse_hpcolorasgray(ppd_option_t *opt)
 {
 	int i;
 	for (i = 0; i < opt->num_choices; i++) {
-		if (strcasecmp("False", opt->choices[i].choice) == 0) {
+		if (strcasecmp("False", opt->choices[i].choice) == 0 ||
+			strcasecmp("Off", opt->choices[i].choice) == 0 ) {
 			optionCube[0][PT_QUALITY_ANY][PT_PAPER_ANY][PT_GRAYSCALE_COLOUR] = &opt->choices[i];
-		} else if (strcasecmp("True", opt->choices[i].choice) == 0) {
+		} else if (strcasecmp("True", opt->choices[i].choice) == 0 ||
+					strcasecmp("HighQuality", opt->choices[i].choice) == 0 ||
+					strcasecmp("BlackInkOnly", opt->choices[i].choice) == 0) {
 			optionCube[0][PT_QUALITY_ANY][PT_PAPER_ANY][PT_GRAYSCALE_GRAYSCALE] = &opt->choices[i];
 		}
 	}
 	// setup the default value:
-	if (strcasecmp("False", opt->defchoice) == 0) {
+	if (strcasecmp("False", opt->defchoice) == 0 || strcasecmp("Off", opt->defchoice) == 0) {
 		aColor = PT_GRAYSCALE_COLOUR;
 	} else {
 		aColor = PT_GRAYSCALE_GRAYSCALE;
@@ -516,65 +477,42 @@ static void parse_cmandresolution(ppd_option_t *opt)
 {
 	int i;
 	for (i = 0; i < opt->num_choices; i++) {
-		if (strcasecmp("CMYKImageRET3600", opt->choices[i].choice) == 0) {
-			optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_COLOUR] = &opt->choices[i];
-			aQuality = PT_QUALITY_HIGH;
-			aColor = PT_GRAYSCALE_COLOUR;
-		} else if (strcasecmp("CMYKImageRET2400", opt->choices[i].choice) == 0) {
-			optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_COLOUR] = &opt->choices[i];
-			aColor = PT_GRAYSCALE_COLOUR;
-		} else if (strcasecmp("Gray1200x1200dpi", opt->choices[i].choice) == 0) {
-			optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_GRAYSCALE] = &opt->choices[i];
-			aQuality = PT_QUALITY_HIGH;
-		} else if (strcasecmp("Gray600x600dpi", opt->choices[i].choice) == 0) {
-			optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_GRAYSCALE] = &opt->choices[i];
+		const pt_choice_keyword *lookingup = pt_cmandresolution_words;
+		while (lookingup->keyword != NULL) {
+			if (strcasecmp(lookingup->keyword, opt->choices[i].choice) == 0) {
+				optionCube[0][lookingup->quality][lookingup->papertype][lookingup->grayscale] = &opt->choices[i];
+				break;
+			} else {
+				lookingup++;
+			}
+		}
+		if ((strcasecmp(opt->choices[i].choice, opt->defchoice) == 0) && (lookingup->keyword != NULL)) {
+			aQuality = lookingup->quality;
+			aColor = lookingup->grayscale;
 		}
 	}
-
 	return;
 }
 
 static void parse_outputmode(ppd_option_t *opt)
 {
-	int i;
-	for (i = 0; i < opt->num_choices; i++) {
-		if (strcasecmp("Draft", opt->choices[i].choice) == 0 ||
-				strcasecmp("FastDraft", opt->choices[i].choice) == 0) {
-			if (optionCube[0][PT_QUALITY_DRAFT][PT_PAPER_ANY][PT_GRAYSCALE_ANY] == NULL) {
-				optionCube[0][PT_QUALITY_DRAFT][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-			}
-		} else if (strcasecmp("DraftGray", opt->choices[i].choice) == 0) {
-			optionCube[0][PT_QUALITY_DRAFT][PT_PAPER_ANY][PT_GRAYSCALE_GRAYSCALE] = &opt->choices[i];
-		} else if (strcasecmp("DraftRGB", opt->choices[i].choice) == 0) {
-			optionCube[0][PT_QUALITY_DRAFT][PT_PAPER_ANY][PT_GRAYSCALE_COLOUR] = &opt->choices[i];
-			aColor = PT_GRAYSCALE_COLOUR;
-		} else if (strcasecmp("Auto", opt->choices[i].choice) == 0 ||
-				   strcasecmp("Normal", opt->choices[i].choice) == 0 ||
-				   strcasecmp("FastNormal", opt->choices[i].choice) == 0 ||
-				   strcasecmp("Good", opt->choices[i].choice) == 0) {
-			optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-		} else if (strcasecmp("NormalGray", opt->choices[i].choice) == 0 ||
-				   strcasecmp("NormaGrayl", opt->choices[i].choice) == 0) {
-			optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_GRAYSCALE] = &opt->choices[i];
-		} else if (strcasecmp("NormalRGB", opt->choices[i].choice) == 0) {
-			optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_COLOUR] = &opt->choices[i];
-			aColor = PT_GRAYSCALE_COLOUR;
-		} else if (strcasecmp("aPhoto", opt->choices[i].choice) == 0 ||
-				   strcasecmp("Best", opt->choices[i].choice) == 0 ||
-				   strcasecmp("Fast", opt->choices[i].choice) == 0) {
-			if (optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_ANY] == NULL) {
-				optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = &opt->choices[i];
-			}
-			aQuality = PT_QUALITY_HIGH;
-		} else if (strcasecmp("BestRGB", opt->choices[i].choice) == 0 ||
-				   strcasecmp("Photo", opt->choices[i].choice) == 0) {
-			optionCube[0][PT_QUALITY_HIGH][PT_PAPER_ANY][PT_GRAYSCALE_COLOUR] = &opt->choices[i];
-			aQuality = PT_QUALITY_HIGH;
-			aColor = PT_GRAYSCALE_COLOUR;
-		}
-	}
-
-	return;
+    int i;
+    for (i=0; i < opt->num_choices; i++) {
+        const pt_choice_keyword *lookingup = pt_outputmode_words;
+        while (lookingup->keyword != NULL) {
+            if (strcasecmp(lookingup->keyword, opt->choices[i].choice) == 0) {
+                optionCube[0][lookingup->quality][lookingup->papertype][lookingup->grayscale] = &opt->choices[i];
+                break;
+            } else {
+                lookingup++;
+            }
+        }
+        if ((strcasecmp(opt->choices[i].choice, opt->defchoice) == 0) && (lookingup->keyword != NULL)) {
+            aQuality = (lookingup->quality   != PT_QUALITY_ANY)   ? lookingup->quality   : aQuality;
+            aPaper =   (lookingup->papertype != PT_PAPER_ANY)     ? lookingup->papertype : aPaper;
+            aColor =   (lookingup->grayscale != PT_GRAYSCALE_ANY) ? lookingup->grayscale : aColor;
+        }
+    }
 }
 
 /* KA: database with options and apropriate function */
@@ -583,6 +521,11 @@ static KeyActions KA[] = {
 		"MediaType",
 		parse_mediatype,
 		pt_mediatype_words
+	},
+	{
+		"HPEconoMode",
+		parse_hpeconomode,
+		NULL
 	},
 	{
 		"Quality",
@@ -607,11 +550,6 @@ static KeyActions KA[] = {
 	{
 		"EconoMode",
 		parse_economode,
-		NULL
-	},
-	{
-		"HPEconoMode",
-		parse_hpeconomode,
 		NULL
 	},
 	{
@@ -684,10 +622,13 @@ static ppd_choice_t *quality_exists(int q)
 
 	if (!optionCube[aPaperSize][q][aPaper][aColor]) {
 		choi = optionCube[aPaperSize][q][PT_PAPER_ANY][PT_GRAYSCALE_ANY];
-		if (!choi) {
+		// choi == 1 is a special case: option doesn't exist in ppd file,
+		// but it is allowed as printer default setting, for ex.:
+		// Standard quality as the only quality, a printer supports
+		if (!choi && choi != (ppd_choice_t *)1) {
 			choi = optionCube[aPaperSize][q][aPaper][PT_GRAYSCALE_ANY];
 		}
-		if (!choi) {
+		if (!choi && choi != (ppd_choice_t *)1) {
 			choi = optionCube[aPaperSize][q][PT_PAPER_ANY][aColor];
 		}
 	}
@@ -700,10 +641,13 @@ static ppd_choice_t *paper_exists(int p)
 
 	if (!optionCube[aPaperSize][aQuality][p][aColor]) {
 		choi = optionCube[aPaperSize][PT_QUALITY_ANY][p][PT_GRAYSCALE_ANY];
-		if (!choi) {
+		// choi == 1 is a special case: option doesn't exist in ppd file,
+		// but it is allowed as printer default setting, for ex.:
+		// Plain paper as the only and default paper type
+		if (!choi && choi != (ppd_choice_t *)1) {
 			choi = optionCube[aPaperSize][aQuality][p][PT_GRAYSCALE_ANY];
 		}
-		if (!choi) {
+		if (!choi && choi != (ppd_choice_t *)1) {
 			choi = optionCube[aPaperSize][PT_QUALITY_ANY][p][aColor];
 		}
 	}
@@ -717,7 +661,7 @@ static ppd_choice_t *color_exists(int c)
 	if (!optionCube[aPaperSize][aQuality][aPaper][c]) {
 		choi = optionCube[aPaperSize][PT_QUALITY_ANY][PT_PAPER_ANY][c];
 		// choi == 1 is a special case: option doesn't exist in ppd file,
-		// but it is allowd as printer default setting. (for ex.:
+		// but it is allowed as printer default setting, for ex.:
 		// Grayscale for black & white printer.
 		if (!choi && choi != (ppd_choice_t *)1) {
 			choi = optionCube[aPaperSize][aQuality][PT_PAPER_ANY][c];
@@ -759,12 +703,17 @@ static void check_defaults(ppd_file_t *ppd)
 	}
 	if (aQuality == PT_QUALITY_ANY) {
 		PT_DEBUG("Qualtiy option not found!");
+		optionCube[0][PT_QUALITY_STANDARD][PT_PAPER_ANY][PT_GRAYSCALE_ANY] = (ppd_choice_t *)1;
+		aQuality = PT_QUALITY_STANDARD;
 	}
 	if (aPaper == PT_PAPER_ANY) {
 		PT_DEBUG("MediaType option not found!");
+		optionCube[0][PT_QUALITY_ANY][PT_PAPER_NORMAL][PT_GRAYSCALE_ANY] = (ppd_choice_t *)1;
+		aPaper = PT_PAPER_NORMAL;
 	}
 }
 
+/* -- Dont remove, for future versions use !
 static ppd_choice_t *find_more(ppd_file_t *ppd, ppd_option_t *opt, int quality, int paper, int color, const pt_choice_keyword *keywords)
 {
 	int i;
@@ -782,6 +731,7 @@ static ppd_choice_t *find_more(ppd_file_t *ppd, ppd_option_t *opt, int quality, 
 	return NULL;
 }
 
+
 static ppd_choice_t *parse_again(ppd_file_t *ppd, ppd_option_t *opt, int quality, int paper, int color)
 {
 	KeyActions *ka = NULL;
@@ -797,6 +747,7 @@ static ppd_choice_t *parse_again(ppd_file_t *ppd, ppd_option_t *opt, int quality
 	}
 	return NULL;
 }
+*/
 
 static void check_constraints(ppd_file_t *ppd, int papersize)
 {
@@ -987,7 +938,6 @@ int pt_get_selected_paper_size_pts(pt_pagesize_t *s)
 	return ret;
 }
 
-
 char *pt_get_print_option_papersize(int papersize_num)
 {
 	PT_RETV_IF(paper_sizes == NULL, NULL, "paper_sizes is NULL");
@@ -1016,7 +966,6 @@ int pt_get_print_option_default_papersize(void)
 		}
 	return 0;
 }
-
 
 /* parse_options: search ppd options and call certain function */
 void pt_parse_options(ppd_file_t *ppd)
@@ -1077,6 +1026,11 @@ ppd_choice_t *pt_selected_choice(int op)
 		break;
 	default:
 		break;
+	}
+	if(choi == (ppd_choice_t*)1) {
+        // Special case. Set by force, no ppd option. Use printer default.
+        // No need to send smth. to printer.
+        choi = NULL;
 	}
 	return choi;
 }

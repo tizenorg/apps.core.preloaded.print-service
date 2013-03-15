@@ -23,77 +23,92 @@ import (
 	"./drv"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"runtime/pprof"
 )
 
 var (
-	infile    string
-	outfile   string
-	glob      string
-	show_help bool
-	cpuprofile string
+	infile		string
+	outfile		*os.File
+	err			error
+	glob		string
+	product		string
+	listmod		string
+	listprod	string
+	show_help	bool
+	cpuprofile	string
 )
 
 func init() {
 	flag.StringVar(&infile, "i", "stripped.drv", "input drv file")
 	flag.StringVar(&glob, "r", "", "model search pattern")
-	flag.StringVar(&cpuprofile, "p", "", "write cpu profile to file")
+	flag.StringVar(&product, "p", "", "product search pattern")
+	flag.StringVar(&listmod, "l", "", "list models")
+	flag.StringVar(&listprod, "c", "", "list products")
+	flag.StringVar(&cpuprofile, "f", "", "write cpu profile to file")
 }
 
 func main() {
+
 	flag.Parse()
 
 	if cpuprofile != "" {
-        f, err := os.Create(cpuprofile)
-        if err != nil {
-            fmt.Print(err)
-        }
-        pprof.StartCPUProfile(f)
-        defer pprof.StopCPUProfile()
-    }
-	
-	if glob == "" {
+		f, err := os.Create(cpuprofile)
+		if err != nil {
+			fmt.Print(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
+
+	if infile == "" {
 		flag.Usage()
 		return
 	}
 
-	buf, err := drv.Read(infile)
-	if err != nil {
-		fmt.Println(err)
+	if listmod != "" {
+		drvm := drv.LoadDrvm(listmod)
+		drvm.ListModels()
 		return
 	}
-	
-	model, err := drv.Find_model(buf, glob)
-	if err != nil {
-		fmt.Println(err)
+
+	if listprod != "" {
+		drvm := drv.LoadDrvm(listprod)
+		drvm.ListProducts()
 		return
 	}
-	
-	if outfile == "" {
-		outfile = glob + ".drv"
+
+	drvm := drv.LoadDrvm(infile)
+
+	if outfile == nil {
+		outfile, err = ioutil.TempFile("/tmp", "DRV")
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
-	
-	fd, err := os.Create(outfile)
+	defer outfile.Close()
+	defer os.Remove(outfile.Name())
+
+	switch {
+	case glob != "":
+		if drvm.PrintModel(glob, outfile) != nil {
+			drvm.PrintProduct(glob, outfile)
+		}
+	case product != "":
+		if drvm.PrintProduct(product, outfile) != nil {
+			drvm.PrintModel(product, outfile)
+		}
+	}
+
+	cmd := exec.Command("ppdc", "-v", "-d", ".", outfile.Name())
+	out,err := cmd.Output()
 	if err != nil {
-		fmt.Println(err)
-		return
+		fmt.Printf("cannot create ppd for model %s : %s\n", glob, err)
 	}
-	defer os.Remove(outfile)
-	defer fd.Close()
-	
-	_, err = fd.Write([]byte(model))
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	
-	cmd := exec.Command("ppdc", "-d", ".", outfile)
-	err = cmd.Run()
-	if err != nil {
-    	fmt.Println("ppdc:", err)
-	}
-	
+
+	fmt.Printf("%s",out)
 	return
 }

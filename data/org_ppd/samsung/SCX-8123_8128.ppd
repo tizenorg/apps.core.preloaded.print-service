@@ -34,18 +34,16 @@
 "
 *End
 
-
 *JCLBegin: "<1B>%-12345X@PJL JOB<0D0A>"
 *JCLToPSInterpreter: "@PJL ENTER LANGUAGE = POSTSCRIPT<0D0A>"
 *JCLEnd: "<1B>%-12345X"
-
 
 *% =========================================================
 *% Collate
 *% =========================================================
 *OpenUI *Collate/Collate:  Boolean
 *OrderDependency: 70 AnySetup *Collate
-*DefaultCollate: True
+*DefaultCollate: False
 *Collate False/Off: "<</Collate false>> setpagedevice"
 *Collate True/On:   "<</Collate true>> setpagedevice"
 *?Collate: "
@@ -381,7 +379,7 @@
 *% =========================================================
 *% Use these entries to set paper size unless there is a specific
 *% reason to use PageRegion, such as when using manual feed.
-*OpenUI *PageSize/PageSize: PickOne
+*OpenUI *PageSize/Page Size: PickOne
 *OrderDependency: 30 AnySetup *PageSize
 *DefaultPageSize: Letter
 *PageSize Letter/Letter:           "<</PageSize [612 792] /ImagingBBox null>> setpagedevice"

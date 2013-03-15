@@ -1,1 +1,0 @@
-ACTION=="add", KERNEL=="lp[0-9]*", SUBSYSTEMS=="usb", MODE="0666" RUN+="/usr/bin/launch_app com.samsung.usb-printer-detector"

@@ -188,8 +188,8 @@
 *JCLOpenUI *JCLBlackOptimization/Black Optimization:  Boolean
 *OrderDependency: 70 JCLSetup *JCLBlackOptimization
 *DefaultJCLBlackOptimization: False
-*JCLBlackOptimization True/On :   "@PJL SET BLACKOPTIMIZATION=ON<0A>"
 *JCLBlackOptimization False/Off : ""
+*JCLBlackOptimization True/On :   "@PJL SET BLACKOPTIMIZATION=ON<0A>"
 *JCLCloseUI: *JCLBlackOptimization
 
 *%========================================================
@@ -976,7 +976,7 @@
 *% =========================================================
 *% Use these entries to set paper size unless there is a specific
 *% reason to use PageRegion, such as when using manual feed.
-*OpenUI *PageSize/PageSize: PickOne
+*OpenUI *PageSize/Page Size: PickOne
 *OrderDependency: 30 AnySetup *PageSize
 *DefaultPageSize: Letter
 *PageSize Letter/Letter:           "<</PageSize [612 792] /ImagingBBox null>> setpagedevice"

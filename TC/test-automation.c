@@ -42,24 +42,23 @@ static counter X[] = {
 
 const static int N = (sizeof(X) / sizeof(counter)) - 1; // Remove {NULL} value
 
-bool reliable_set_choice(int id, int choice) {
+bool reliable_set_choice(int id, int choice)
+{
 	int old_choice = -1, new_choice = -1, result = -1;
 	old_choice = pt_get_selected(id);
 	result = pt_set_choice(id, choice);
 	new_choice = pt_get_selected(id);
 
 	if ((old_choice == -1) ||
-		(result == -1) ||
-		(new_choice == -1))
-	{
+			(result == -1) ||
+			(new_choice == -1)) {
 		PT_DEBUG("OptionMapping:");
 		PT_DEBUG("Internal Error");
 		exit(EXIT_FAILURE);
 	}
 
 	if ((result == choice) &&
-		(result == new_choice)) // choice is enabled
-	{
+			(result == new_choice)) { // choice is enabled
 		return true;
 	} else if ((old_choice == result) &&
 			   (result == new_choice)) { //choice is disabled
@@ -71,23 +70,21 @@ bool reliable_set_choice(int id, int choice) {
 	}
 }
 
-void check_state(counter *array, int count) {
-	if (count == N)
-	{
+void check_state(counter *array, int count)
+{
+	if (count == N) {
 		check_all();
 	} else {
 		int i;
-		for (i = array[count].min; i < array[count].max; ++i)
-		{
-			int old_choice = -1, new_choice = -1, result = -1;
+		for (i = array[count].min; i < array[count].max; ++i) {
+			//int old_choice = -1, new_choice = -1, result = -1;
 			bool set_choice = false;
 			array[count].current = i;
 			state st = save_state();
 			print_groups_before(count);
 
 			set_choice = reliable_set_choice(array[count].id, i);
-			if (set_choice)
-			{
+			if (set_choice) {
 				printf(YE "%s: " RS, array[count].desc);
 				printf(GR "%d " RS, array[count].current);
 				print_groups_after(count);
@@ -113,24 +110,20 @@ void swap(int a,int b)
 void generate(int k)
 {
 	static int cnt = 0;
-	if (k==N)
-	{
+	if (k==N) {
 		cnt++;
-		int i;
+		//int i;
 		state st;
-		const char* string = BOLD YE "%s %s %s %s\n" RS RS_BOLD;
+		//const char *string = BOLD YE "%s %s %s %s\n" RS RS_BOLD;
 		printf("GROUP %d [DEFAULT VALUES]\n", cnt);
 		st = get_current_state();
 		// FIXME It's hack! As order of GROUPS can be changed in future
 		printf(YE "%d %d %d %d\n" RS, st.quality,st.papersize,st.grayscale,st.paper);
 		printf("\n");
 		check_state(X, 0);
-	}
-	else
-	{
+	} else {
 		int j;
-		for(j=k;j<N;j++)
-		{
+		for (j=k; j<N; j++) {
 			swap(k,j);
 			generate(k+1);
 			swap(k,j);
@@ -138,28 +131,24 @@ void generate(int k)
 	}
 }
 
-void init_groups(counter *array) {
+void init_groups(counter *array)
+{
 	int cnt = 0;
-	while(array[cnt].desc) {
-		if (!strcmp(array[cnt].desc, "QL"))
-		{
+	while (array[cnt].desc) {
+		if (!strcmp(array[cnt].desc, "QL")) {
 			array[cnt].current = pt_get_selected(PT_OPTION_ID_QUALITY);
-		} else if (!strcmp(array[cnt].desc, "PS"))
-		{
+		} else if (!strcmp(array[cnt].desc, "PS")) {
 			array[cnt].max = pt_get_print_option_papersize_num();
 			REAL_PAPERSIZE_MAX = array[cnt].max;
-			if (REAL_PAPERSIZE_MAX < PT_PAPER_A4)
-			{
+			if (REAL_PAPERSIZE_MAX < PT_PAPER_A4) {
 				PT_DEBUG("[papersize] max value [%d] is out of the correct values: [%d-%d]",\
-						REAL_PAPERSIZE_MAX, PT_PAPER_A4, PT_PAPER_SIZE_MAX);
+						 REAL_PAPERSIZE_MAX, PT_PAPER_A4, PT_PAPER_SIZE_MAX);
 				exit(EXIT_FAILURE);
 			}
 			array[cnt].current = pt_get_selected(PT_OPTION_ID_PAPERSIZE);
-		} else if (!strcmp(array[cnt].desc, "GL"))
-		{
+		} else if (!strcmp(array[cnt].desc, "GL")) {
 			array[cnt].current = pt_get_selected(PT_OPTION_ID_GRAYSCALE);
-		} else if (!strcmp(array[cnt].desc, "PP"))
-		{
+		} else if (!strcmp(array[cnt].desc, "PP")) {
 			array[cnt].current = pt_get_selected(PT_OPTION_ID_PAPER);
 		} else {
 			printf("Unknown description of option!");
@@ -171,9 +160,10 @@ void init_groups(counter *array) {
 
 
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
 	ppd_file_t *ppd;
-	option_list *option_list;
+	//option_list *option_list;
 	if (!argv[1]) {
 		PT_DEBUG("No any ppd file");
 		exit(EXIT_FAILURE);
@@ -194,7 +184,8 @@ int main(int argc, char** argv) {
 	exit(EXIT_SUCCESS);
 }
 
-state save_state() {
+state save_state()
+{
 	state st;
 	st.quality = pt_get_selected(PT_OPTION_ID_QUALITY);
 	st.paper = pt_get_selected(PT_OPTION_ID_PAPER);
@@ -205,8 +196,7 @@ state save_state() {
 	print_state(st);
 
 	if ((st.quality == -1) || (st.paper == -1) ||
-		(st.grayscale == -1) || (st.papersize == -1) )
-	{
+			(st.grayscale == -1) || (st.papersize == -1)) {
 		PT_DEBUG("Returned value not correct:");
 		PT_DEBUG("[GRAYSCALE]: %d", st.grayscale);
 		PT_DEBUG("[QUALITY]: %d", st.quality);
@@ -217,41 +207,39 @@ state save_state() {
 	return st;
 }
 
-state get_current_state() {
+state get_current_state()
+{
 	state st;
 	st.quality = pt_get_selected(PT_OPTION_ID_QUALITY);
 	st.paper = pt_get_selected(PT_OPTION_ID_PAPER);
 	st.grayscale = pt_get_selected(PT_OPTION_ID_GRAYSCALE);
 	st.papersize = pt_get_selected(PT_OPTION_ID_PAPERSIZE);
 
-	if ((st.quality < PT_QUALITY_DRAFT) || (st.quality >= PT_QUALITY_ANY))
-	{
+	if ((st.quality < PT_QUALITY_DRAFT) || (st.quality >= PT_QUALITY_ANY)) {
 		PT_DEBUG("[quality] choice [%d] is out of the correct values: [%d-%d]",\
-				st.quality, PT_QUALITY_DRAFT, (PT_QUALITY_ANY-1));
+				 st.quality, PT_QUALITY_DRAFT, (PT_QUALITY_ANY-1));
 		exit(EXIT_FAILURE);
 	}
-	if ((st.paper < PT_PAPER_NORMAL) || (st.paper >= PT_PAPER_ANY))
-	{
+	if ((st.paper < PT_PAPER_NORMAL) || (st.paper >= PT_PAPER_ANY)) {
 		PT_DEBUG("[paper] choice [%d] is out of the correct values: [%d-%d]",\
-				st.paper, PT_PAPER_NORMAL, (PT_PAPER_ANY-1));
+				 st.paper, PT_PAPER_NORMAL, (PT_PAPER_ANY-1));
 		exit(EXIT_FAILURE);
 	}
-	if ((st.grayscale < PT_GRAYSCALE_GRAYSCALE) || (st.grayscale >= PT_GRAYSCALE_ANY))
-	{
+	if ((st.grayscale < PT_GRAYSCALE_GRAYSCALE) || (st.grayscale >= PT_GRAYSCALE_ANY)) {
 		PT_DEBUG("[grayscale] choice [%d] is out of the correct values: [%d-%d]",\
-				st.grayscale, PT_GRAYSCALE_GRAYSCALE, (PT_GRAYSCALE_ANY-1));
+				 st.grayscale, PT_GRAYSCALE_GRAYSCALE, (PT_GRAYSCALE_ANY-1));
 		exit(EXIT_FAILURE);
 	}
-	if ((st.papersize < PT_PAPER_A4) || (st.grayscale >= REAL_PAPERSIZE_MAX))
-	{
+	if ((st.papersize < PT_PAPER_A4) || (st.grayscale >= REAL_PAPERSIZE_MAX)) {
 		PT_DEBUG("[papersize] choice [%d] is out of the correct values: [%d-%d]",\
-				st.papersize, PT_PAPER_A4, (REAL_PAPERSIZE_MAX-1));
+				 st.papersize, PT_PAPER_A4, (REAL_PAPERSIZE_MAX-1));
 		exit(EXIT_FAILURE);
 	}
 	return st;
 }
 
-void print_cur_state() {
+void print_cur_state()
+{
 	state st;
 	st.quality = pt_get_selected(PT_OPTION_ID_QUALITY);
 	st.paper = pt_get_selected(PT_OPTION_ID_PAPER);
@@ -261,67 +249,69 @@ void print_cur_state() {
 	print_state(st);
 }
 
-void print_groups_before(int num) {
+void print_groups_before(int num)
+{
 	int val = 0;
-	while((val < num) && (X[val].desc != NULL)) {
+	while ((val < num) && (X[val].desc != NULL)) {
 		printf(YE "%s: " RS, X[val].desc);
 		printf(GR "%d: " RS, X[val].current);
 		val++;
 	}
 }
 
-void print_groups_after(int num) {
+void print_groups_after(int num)
+{
 	//int cnt = num;
-	while(X[++num].desc) {
+	while (X[++num].desc) {
 		printf(YE "%s: " RS, X[num].desc);
 		printf("%d: ", X[num].current);
 	}
 	printf("\n");
 }
 
-void print_state(state st) {
+void print_state(state st)
+{
 	PT_DEBUG("[GRAYSCALE]: %d", st.grayscale);
 	PT_DEBUG("[QUALITY]: %d", st.quality);
 	PT_DEBUG("[PAPER]: %d", st.paper);
 	PT_DEBUG("[PAPERSIZE]: %d, %s", st.papersize, \
-		pt_get_print_option_papersize(st.papersize));
+			 pt_get_print_option_papersize(st.papersize));
 	// TEST
 	int i = 0;
-	for (i = 0; i < pt_get_print_option_papersize_num(); ++i)
-	{
+	for (i = 0; i < pt_get_print_option_papersize_num(); ++i) {
 		PT_DEBUG("TEST [PAPERSIZE]: %d, %s", i, \
-		pt_get_print_option_papersize(i));
+				 pt_get_print_option_papersize(i));
 	}
 }
 
-void restore_state(state st, counter *group) {
+void restore_state(state st, counter *group)
+{
 	int set_choice = false;
 	pt_print_option_e option = group->id;
 
 	switch (option) {
-		case PT_OPTION_ID_QUALITY:
-			set_choice = reliable_set_choice(option, st.quality);
-			group->current = st.quality;
-			break;
-		case PT_OPTION_ID_PAPER:
-			set_choice = reliable_set_choice(option, st.paper);
-			group->current = st.paper;
-			break;
-		case PT_OPTION_ID_PAPERSIZE:
-			set_choice = reliable_set_choice(option, st.papersize);
-			group->current = st.papersize;
-			break;
-		case PT_OPTION_ID_GRAYSCALE:
-			set_choice = reliable_set_choice(option, st.grayscale);
-			group->current = st.grayscale;
-			break;
-		default:
-			PT_DEBUG("[Error] Got unknown state");
-			exit(EXIT_FAILURE);
+	case PT_OPTION_ID_QUALITY:
+		set_choice = reliable_set_choice(option, st.quality);
+		group->current = st.quality;
+		break;
+	case PT_OPTION_ID_PAPER:
+		set_choice = reliable_set_choice(option, st.paper);
+		group->current = st.paper;
+		break;
+	case PT_OPTION_ID_PAPERSIZE:
+		set_choice = reliable_set_choice(option, st.papersize);
+		group->current = st.papersize;
+		break;
+	case PT_OPTION_ID_GRAYSCALE:
+		set_choice = reliable_set_choice(option, st.grayscale);
+		group->current = st.grayscale;
+		break;
+	default:
+		PT_DEBUG("[Error] Got unknown state");
+		exit(EXIT_FAILURE);
 	}
 
-	if (!set_choice)
-	{
+	if (!set_choice) {
 		PT_DEBUG("Can't restore choice back");
 		exit(EXIT_FAILURE);
 	}
@@ -329,40 +319,43 @@ void restore_state(state st, counter *group) {
 	print_state(st);
 }
 
-void check_all() {
+void check_all()
+{
 	check_selected_choice();
 	check_selected_choice_is_enabled();
 	check_all_choices_disabled();
- }
+}
 
-void check_selected_choice() {
-	if(!pt_selected_choice(PT_OPTION_ID_PAPERSIZE)) {
+void check_selected_choice()
+{
+	if (!pt_selected_choice(PT_OPTION_ID_PAPERSIZE)) {
 		PT_DEBUG("No any selected choice in PT_OPTION_ID_PAPERSIZE option");
 		exit(EXIT_FAILURE);
 	}
-	if(!pt_selected_choice(PT_OPTION_ID_QUALITY)) {
+	if (!pt_selected_choice(PT_OPTION_ID_QUALITY)) {
 		PT_DEBUG("No any selected choice in PT_OPTION_ID_QUALITY option");
 		exit(EXIT_FAILURE);
 	}
-	if(!pt_selected_choice(PT_OPTION_ID_PAPER)) {
+	if (!pt_selected_choice(PT_OPTION_ID_PAPER)) {
 		PT_DEBUG("No any selected choice in PT_OPTION_ID_PAPER option");
 		exit(EXIT_FAILURE);
 	}
-	if(!pt_selected_choice(PT_OPTION_ID_GRAYSCALE)) {
+	if (!pt_selected_choice(PT_OPTION_ID_GRAYSCALE)) {
 		PT_DEBUG("No any selected choice in PT_OPTION_ID_GRAYSCALE option");
 		exit(EXIT_FAILURE);
 	}
 }
 
-void check_selected_choice_is_enabled() {
+void check_selected_choice_is_enabled()
+{
 	// TEST PAPERSIZE
 	int choice = -1;
 	choice = pt_get_selected(PT_OPTION_ID_PAPERSIZE);
-	if(choice == -1) {
+	if (choice == -1) {
 		PT_DEBUG("function pt_get_selected returned -1");
 		exit(EXIT_FAILURE);
 	}
-	if(!pt_is_enabled(PT_OPTION_ID_PAPERSIZE, choice)) {
+	if (!pt_is_enabled(PT_OPTION_ID_PAPERSIZE, choice)) {
 		PT_DEBUG("We've got selected choice which is not enabled");
 		exit(EXIT_FAILURE);
 	}
@@ -370,11 +363,11 @@ void check_selected_choice_is_enabled() {
 	// TEST QUALITY
 	choice = -1;
 	choice = pt_get_selected(PT_OPTION_ID_QUALITY);
-	if(choice == -1) {
+	if (choice == -1) {
 		PT_DEBUG("function pt_get_selected returned -1");
 		exit(EXIT_FAILURE);
 	}
-	if(!pt_is_enabled(PT_OPTION_ID_QUALITY, choice)) {
+	if (!pt_is_enabled(PT_OPTION_ID_QUALITY, choice)) {
 		PT_DEBUG("We've got selected choice which is not enabled");
 		exit(EXIT_FAILURE);
 	}
@@ -382,11 +375,11 @@ void check_selected_choice_is_enabled() {
 	// TEST PAPER
 	choice = -1;
 	choice = pt_get_selected(PT_OPTION_ID_PAPER);
-	if(choice == -1) {
+	if (choice == -1) {
 		PT_DEBUG("function pt_get_selected returned -1");
 		exit(EXIT_FAILURE);
 	}
-	if(!pt_is_enabled(PT_OPTION_ID_PAPER, choice)) {
+	if (!pt_is_enabled(PT_OPTION_ID_PAPER, choice)) {
 		PT_DEBUG("We've got selected choice which is not enabled");
 		exit(EXIT_FAILURE);
 	}
@@ -394,17 +387,18 @@ void check_selected_choice_is_enabled() {
 	// TEST GRAYSCALE
 	choice = -1;
 	choice = pt_get_selected(PT_OPTION_ID_GRAYSCALE);
-	if(choice == -1) {
+	if (choice == -1) {
 		PT_DEBUG("function pt_get_selected returned -1");
 		exit(EXIT_FAILURE);
 	}
-	if(!pt_is_enabled(PT_OPTION_ID_GRAYSCALE, choice)) {
+	if (!pt_is_enabled(PT_OPTION_ID_GRAYSCALE, choice)) {
 		PT_DEBUG("We've got selected choice which is not enabled");
 		exit(EXIT_FAILURE);
 	}
 }
 
-void check_all_choices_disabled() {
+bool check_all_choices_disabled()
+{
 	bool papersize = true, quality = true;
 	bool grayscale = true, paper = true;
 	bool general = true;
@@ -420,79 +414,72 @@ void check_all_choices_disabled() {
 	return (general);
 }
 
-int check_all_choices_disabled_papersize() {
+int check_all_choices_disabled_papersize()
+{
 	bool enabled = false;
 	int i;
-	for (i = PT_PAPER_A4; i < PT_PAPER_SIZE_MAX; ++i)
-	{
-		if (pt_is_enabled(PT_OPTION_ID_PAPERSIZE, i))
-		{
+	for (i = PT_PAPER_A4; i < PT_PAPER_SIZE_MAX; ++i) {
+		if (pt_is_enabled(PT_OPTION_ID_PAPERSIZE, i)) {
 			enabled = true;
 		}
 	}
-	if (!enabled)
-	{
+	if (!enabled) {
 		PT_DEBUG("All choices are DISABLED in PAPERSIZE");
 		exit(EXIT_FAILURE);
 	}
 	return (!enabled);
 }
 
-int check_all_choices_disabled_grayscale() {
+int check_all_choices_disabled_grayscale()
+{
 	bool enabled = false;
 	int i;
-	for (i = PT_GRAYSCALE_GRAYSCALE; i < PT_GRAYSCALE_MAX; ++i)
-	{
-		if (pt_is_enabled(PT_OPTION_ID_GRAYSCALE, i))
-		{
+	for (i = PT_GRAYSCALE_GRAYSCALE; i < PT_GRAYSCALE_MAX; ++i) {
+		if (pt_is_enabled(PT_OPTION_ID_GRAYSCALE, i)) {
 			enabled = true;
 		}
 	}
-	if (!enabled)
-	{
+	if (!enabled) {
 		PT_DEBUG("All choices are DISABLED in GRAYSCALE");
 		exit(EXIT_FAILURE);
 	}
 	return (!enabled);
 }
 
-int check_all_choices_disabled_quality() {
+int check_all_choices_disabled_quality()
+{
 	bool enabled = false;
 	int i;
-	for (i = PT_QUALITY_DRAFT; i < PT_QUALITY_MAX; ++i)
-	{
-		if (pt_is_enabled(PT_OPTION_ID_QUALITY, i))
-		{
+	for (i = PT_QUALITY_DRAFT; i < PT_QUALITY_MAX; ++i) {
+		if (pt_is_enabled(PT_OPTION_ID_QUALITY, i)) {
 			enabled = true;
 		}
 	}
-	if (!enabled)
-	{
+	if (!enabled) {
 		PT_DEBUG("All choices are DISABLED in QUALITY");
 		exit(EXIT_FAILURE);
 	}
 	return (!enabled);
 }
 
-int check_all_choices_disabled_paper() {
+int check_all_choices_disabled_paper()
+{
 	bool enabled = false;
 	int i;
-	for (i = PT_PAPER_NORMAL; i < PT_PAPER_MAX; ++i)
-	{
-		if (pt_is_enabled(PT_OPTION_ID_PAPER, i))
-		{
+	for (i = PT_PAPER_NORMAL; i < PT_PAPER_MAX; ++i) {
+		if (pt_is_enabled(PT_OPTION_ID_PAPER, i)) {
 			enabled = true;
 		}
 	}
-	if (!enabled)
-	{
+	if (!enabled) {
 		PT_DEBUG("All choices are DISABLED in PAPER");
 		exit(EXIT_FAILURE);
 	}
 	return (!enabled);
 }
 
-void set_custom_choice(int qual, int paper, int gr_scale, int paper_size) {
+void set_custom_choice(int qual, int paper, int gr_scale, int paper_size)
+{
 	pt_set_choice(PT_OPTION_ID_PAPERSIZE, paper);
 	check_all();
 	pt_set_choice(PT_OPTION_ID_QUALITY, qual);
@@ -502,10 +489,10 @@ void set_custom_choice(int qual, int paper, int gr_scale, int paper_size) {
 	pt_set_choice(PT_OPTION_ID_PAPERSIZE, paper_size);
 }
 
-ppd_file_t* open_ppd_file(const char *filename) {
+ppd_file_t *open_ppd_file(const char *filename)
+{
 	ppd_file_t *ppd = ppdOpenFile(filename);
-	if (!ppd)
-	{
+	if (!ppd) {
 		PT_DEBUG("PPD file can't be loaded");
 		exit(EXIT_FAILURE);
 	}

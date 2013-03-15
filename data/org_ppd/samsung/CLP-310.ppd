@@ -49,10 +49,13 @@
 *secPJLColorModel RGB/Color: "@PJL SET COLORMODE = COLOR<0A>"
 *secPJLColorModel Gray/Grayscale: "@PJL SET COLORMODE = MONO<0A>"
 
-*OpenUI *Resolution/Quality: PickOne
-*DefaultResolution: 600x600_Draft
-*Resolution 600x600_Draft/Draft: "<</HWResolution[600 600]>>setpagedevice"
-*CloseUI: *Resolution
+*OpenUI *Quality/Quality: PickOne
+*OrderDependency: 15 AnySetup *Quality
+*DefaultQuality: 600x600
+*Quality 600x600/Draft: "<</HWResolution[600 600]>>setpagedevice"
+*CloseUI: *Quality
+
+*DefaultResolution: 600dpi
 
 *OpenUI *EdgeControl/Edge Control: PickOne
 *DefaultEdgeControl: Fine

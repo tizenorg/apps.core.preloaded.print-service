@@ -176,3 +176,44 @@ static const pt_choice_keyword pt_mediatype_words[] = {
 	{"ThickGlossy",                   PT_QUALITY_ANY,     PT_PAPER_GLOSSY,  PT_GRAYSCALE_ANY}, // - 3
 	{ NULL,                           PT_QUALITY_ANY,     PT_PAPER_ANY,     PT_GRAYSCALE_ANY}
 };
+
+static const pt_resolution_keyword pt_resoultion_words[] = {
+	{"300dpi",        PT_RESOLUTION_LOWEST  }, // - 20
+	{"300x300dpi",    PT_RESOLUTION_LOWEST  }, // - 26
+	{"600dpi",        PT_RESOLUTION_LOW     }, // - 99
+	{"600x600dpi",    PT_RESOLUTION_LOW     }, // - 83
+	{"600x600_Draft", PT_RESOLUTION_LOW     }, // - 7
+	{"600x600_1",     PT_RESOLUTION_LOW     }, // - 1
+	{"600x600_Best",  PT_RESOLUTION_STANDARD}, // - 2
+	{"1200dpi",       PT_RESOLUTION_STANDARD}, // - 131
+	{"1200x600dpi",   PT_RESOLUTION_STANDARD}, // - 12
+	{"4800dpi",       PT_RESOLUTION_STANDARD}, // - 1
+	{"1200x1200dpi",  PT_RESOLUTION_HIGH    }, // - 62
+	{ NULL,           PT_RESOLUTION_MAX     }
+};
+
+static const pt_choice_keyword pt_cmandresolution_words[] = {
+	{"CMYKImageRET3600", PT_QUALITY_STANDARD, PT_PAPER_ANY, PT_GRAYSCALE_COLOUR},
+	{"CMYKImageRET2400", PT_QUALITY_STANDARD, PT_PAPER_ANY, PT_GRAYSCALE_COLOUR},
+	{"Gray1200x1200dpi", PT_QUALITY_HIGH,     PT_PAPER_ANY, PT_GRAYSCALE_GRAYSCALE},
+	{"Gray600x600dpi",   PT_QUALITY_STANDARD, PT_PAPER_ANY, PT_GRAYSCALE_GRAYSCALE}
+};
+
+static const pt_choice_keyword pt_outputmode_words[] = {
+	{"Draft",            PT_QUALITY_DRAFT,    PT_PAPER_ANY, PT_GRAYSCALE_ANY},
+	{"FastDraft",        PT_QUALITY_DRAFT,    PT_PAPER_ANY, PT_GRAYSCALE_ANY},
+	{"Fast",             PT_QUALITY_DRAFT,    PT_PAPER_ANY, PT_GRAYSCALE_ANY},
+	{"DraftGray",        PT_QUALITY_DRAFT,    PT_PAPER_ANY, PT_GRAYSCALE_GRAYSCALE},
+	{"DraftRGB",         PT_QUALITY_DRAFT,    PT_PAPER_ANY, PT_GRAYSCALE_COLOUR},
+	{"Auto",             PT_QUALITY_STANDARD, PT_PAPER_ANY, PT_GRAYSCALE_ANY},
+	{"Normal",           PT_QUALITY_STANDARD, PT_PAPER_ANY, PT_GRAYSCALE_ANY},
+	{"FastNormal",       PT_QUALITY_STANDARD, PT_PAPER_ANY, PT_GRAYSCALE_ANY},
+	{"Good",             PT_QUALITY_STANDARD, PT_PAPER_ANY, PT_GRAYSCALE_ANY},
+	{"NormalGray",       PT_QUALITY_STANDARD, PT_PAPER_ANY, PT_GRAYSCALE_GRAYSCALE},
+	{"NormaGrayl",       PT_QUALITY_STANDARD, PT_PAPER_ANY, PT_GRAYSCALE_GRAYSCALE},
+	{"NormalRGB",        PT_QUALITY_STANDARD, PT_PAPER_ANY, PT_GRAYSCALE_COLOUR},
+	{"aPhoto",           PT_QUALITY_HIGH,     PT_PAPER_ANY, PT_GRAYSCALE_ANY},
+	{"Best",             PT_QUALITY_HIGH,     PT_PAPER_ANY, PT_GRAYSCALE_ANY},
+	{"BestRGB",          PT_QUALITY_HIGH,     PT_PAPER_ANY, PT_GRAYSCALE_COLOUR},
+	{"Photo",            PT_QUALITY_HIGH,     PT_PAPER_ANY, PT_GRAYSCALE_COLOUR},
+};

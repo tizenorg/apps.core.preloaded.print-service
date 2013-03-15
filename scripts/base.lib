@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+function create-file {
+	local _FILE="$1"
+	if [ -z "$_FILE" ];
+	then
+		printf "[ERROR] Argument %s is not correct\n" "$_ARG1";
+		exit 1;
+	fi
+
+	if ! [ -f "$_FILE" ]; then
+		local _DIR_PATH
+		_DIR_PATH="$(dirname $_FILE)"
+		local _FNAME="$(basename $_FILE)"
+		local _REALPATH
+		_REALPATH="$(realpath $_DIR_PATH 2> /dev/null)"
+		if ! [ "$?" -eq "0" ]; then
+			_REALPATH="$_DIR_PATH"
+		fi
+
+		if ! [ -d "$_REALPATH" ]; then
+			mkdir -p "$_REALPATH";
+			if ! [ "$?" -eq "0" ]; then
+				printf "[ERROR] Can't create directory %s\n" "$_DIR_PATH";
+				exit 1;
+			fi
+		fi
+
+		touch "$_REALPATH"/"$_FNAME" 2> /dev/null;
+		if ! [ "$?" -eq "0" ]; then
+				printf "[ERROR] Can't create file %s/%s\n" "$_DIR_PATH" "$_FNAME";
+				exit 1;
+		fi
+	fi
+}

@@ -71,12 +71,14 @@
 *% =========================================================
 *%  Resolution & Halftone Information
 *% =========================================================
-*OpenUI *Resolution/Quality: PickOne
-*OrderDependency: 10 AnySetup *Resolution
+*OpenUI *Quality/Quality: PickOne
+*OrderDependency: 10 AnySetup *Quality
+*DefaultQuality: 600dpi
+*Quality 1200dpi/Normal : "<</HWResolution[1200 1200]>>setpagedevice"
+*Quality 600dpi/Draft: "<</HWResolution[600 600]>>setpagedevice"
+*CloseUI: *Quality
+
 *DefaultResolution: 600dpi
-*Resolution 600dpi/Draft: "<</HWResolution[600 600]>>setpagedevice"
-*Resolution 1200dpi/Normal : "<</HWResolution[1200 1200]>>setpagedevice"
-*CloseUI: *Resolution
 
 *% =========================================================
 *%  Paper Source
@@ -146,7 +148,7 @@
 *% =========================================================
 *% Use these entries to set paper size unless there is a specific
 *% reason to use PageRegion, such as when using manual Feeder.
-*OpenUI *PageSize/PageSize: PickOne
+*OpenUI *PageSize/Page Size: PickOne
 *OrderDependency: 30 AnySetup *PageSize
 *DefaultPageSize: Letter
 *PageSize Letter/Letter: "<</Policies <</PageSize 7>> /PageSize [612 792] /ImagingBBox null>> setpagedevice"
