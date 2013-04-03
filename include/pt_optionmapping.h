@@ -28,6 +28,7 @@ typedef struct {
 	int quality;
 	int papertype;
 	int grayscale;
+	int duplex;
 } pt_choice_keyword;
 
 typedef struct {
@@ -49,9 +50,11 @@ typedef struct {
 	pt_resolution_t weight;
 } pt_resolution_keyword;
 
-#define PT_OPTIONCUBE_TEST_PRINT
+#undef PT_OPTIONCUBE_TEST_PRINT
+#define PT_USER_OPTION_CONFIG_FILE "/opt/etc/cups/ppd/settings.cfg"
 
-ppd_choice_t *pt_selected_choice(int op);
+ppd_choice_t *pt_selected_choice(int op, pt_orientation_e p);
 void pt_parse_options(ppd_file_t *ppd);
+void pt_save_user_choice(void);
 
 #endif // PT_OPTIONMAPPING_H

@@ -20,8 +20,10 @@
 #include <stdbool.h>
 #include <cups/cups.h>
 #include <cups/ppd.h>
+#include <pt_optionmapping.h>
 #include <pt_debug.h>
 #include <pt_test.h>
+#include <pt_db.h>
 
 #define GR "\E[32m"
 #define RD "\E[31m"
@@ -328,19 +330,19 @@ void check_all()
 
 void check_selected_choice()
 {
-	if (!pt_selected_choice(PT_OPTION_ID_PAPERSIZE)) {
+	if (!pt_selected_choice(PT_OPTION_ID_PAPERSIZE, PT_ORIENTATION_PORTRAIT)) {
 		PT_DEBUG("No any selected choice in PT_OPTION_ID_PAPERSIZE option");
 		exit(EXIT_FAILURE);
 	}
-	if (!pt_selected_choice(PT_OPTION_ID_QUALITY)) {
+	if (!pt_selected_choice(PT_OPTION_ID_QUALITY, PT_ORIENTATION_PORTRAIT)) {
 		PT_DEBUG("No any selected choice in PT_OPTION_ID_QUALITY option");
 		exit(EXIT_FAILURE);
 	}
-	if (!pt_selected_choice(PT_OPTION_ID_PAPER)) {
+	if (!pt_selected_choice(PT_OPTION_ID_PAPER, PT_ORIENTATION_PORTRAIT)) {
 		PT_DEBUG("No any selected choice in PT_OPTION_ID_PAPER option");
 		exit(EXIT_FAILURE);
 	}
-	if (!pt_selected_choice(PT_OPTION_ID_GRAYSCALE)) {
+	if (!pt_selected_choice(PT_OPTION_ID_GRAYSCALE, PT_ORIENTATION_PORTRAIT)) {
 		PT_DEBUG("No any selected choice in PT_OPTION_ID_GRAYSCALE option");
 		exit(EXIT_FAILURE);
 	}

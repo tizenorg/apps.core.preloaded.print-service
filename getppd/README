@@ -1,9 +1,0 @@
-there is two targets in makefile:
-1) called when you execute make command
-
-2) debug version with SIGSEGV handler. to compile it you must to have
-been installed binutils-dev package in your system
-
-
-if you want to include sources into other program, you have not to including
-backtrace.c in sources.

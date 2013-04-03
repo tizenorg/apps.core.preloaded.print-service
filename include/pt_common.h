@@ -61,25 +61,6 @@ typedef struct {
 } pt_notification_t;
 */
 
-typedef struct {
-	int  copies;							/** the number of copies */
-	int  orientation;						/** 0- portrait mode,
-											  * 1- landscape mode
-											  */
-	pt_paper_size_e   papersize;			/** reserved, paper size */
-
-#if 0 // copied from pt_printer_mgr_t
-	int				copies;					/** print copy number */
-	int				size;					/** paper size */
-	pt_orientation_e	landscape;				/** orientation */
-	pt_scaling_e		scaling;					/** scaling mode */
-	pt_image_size_option_e	imagesize;				/** image size */
-	pt_range_e		range;					/** printing range */
-//	pt_grayscale_t grayscale;					/** colour mode */
-//	pt_quality_t quality;						/** quality */
-//	pt_paper_t paper;							/** paper type */
-#endif
-} pt_print_option_t;
 
 typedef struct {
 	int  id;									/** job id */
@@ -131,7 +112,6 @@ typedef struct {
 typedef struct {
 	pt_connection_type_e connect_type;			/** assigned connection type */
 	pt_printer_mgr_t	*active_printer;		/** active printer info */
-	pt_print_option_t	*option;				/** print option */
 	pt_search_data_t		*search;
 
 	cups_option_t		*job_options;

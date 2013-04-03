@@ -193,12 +193,6 @@ static void __pt_launch_daemon(void)
 	avahi_argv[4] = "--debug";
 	avahi_argv[5] = NULL;
 
-	//FILE *result = NULL;
-	//if ((result = popen(CLEAR_JOB_TEMP, "r")) != NULL) {
-	//	pclose(result);
-	//	result = NULL;
-	//}
-
 	pt_utils_remove_files_in("/opt/var/spool/cups");
 	pt_utils_remove_files_in("/opt/var/run/cups");
 
@@ -265,7 +259,10 @@ static gboolean __pt_process_hotplug_event(GIOChannel *source, GIOCondition cond
 			info->evt_cb(event, info->user_data, NULL);
 		} else {
 			PT_DEBUG("Failed to send hotplug event because of info->evt_cb is NULL");
+			return FALSE;
 		}
+	} else {
+		return FALSE;
 	}
 
 	return TRUE;
@@ -568,6 +565,8 @@ int pt_start_print(const char **files, int num)
 	int conn_type = 0;
 	int ret = 0;
 
+	pt_save_user_choice();
+
 	ret = pt_get_connection_status(&conn_type);
 	if (strcasestr(g_pt_info->active_printer->address,"usb://") != NULL) {
 		if ((conn_type&PT_CONNECTION_USB) == 0) {
@@ -694,7 +693,6 @@ int pt_init(pt_event_cb evt_cb, void *user_data)
 
 	g_pt_info = (pt_info_t *)calloc(1, sizeof(pt_info_t));
 	PT_RETV_IF(g_pt_info == NULL, PT_ERR_NO_MEMORY, "Failed to malloc");
-	//memset(g_pt_info, 0, sizeof(pt_info_t));
 
 	g_pt_info->evt_cb = evt_cb;
 	g_pt_info->user_data = user_data;
@@ -702,30 +700,16 @@ int pt_init(pt_event_cb evt_cb, void *user_data)
 	__pt_launch_daemon();
 
 	g_pt_info->active_printer = (pt_printer_mgr_t *)calloc(1, sizeof(pt_printer_mgr_t));
-	PT_RETV_IF(g_pt_info->active_printer == NULL, PT_ERR_NO_MEMORY,
-			   "Failed to malloc");
-	//memset(g_pt_info->active_printer, 0, sizeof(pt_printer_mgr_t));
-
-	g_pt_info->option = (pt_print_option_t *)calloc(1, sizeof(pt_print_option_t));
-	PT_RETV_IF(g_pt_info->option == NULL, PT_ERR_NO_MEMORY,
-			   "Failed to malloc");
-	//memset(g_pt_info->option, 0, sizeof(pt_print_option_t));
+	PT_RETV_IF(g_pt_info->active_printer == NULL, PT_ERR_NO_MEMORY, "Failed to malloc");
 
 	g_pt_info->search = (pt_search_data_t *)calloc(1, sizeof(pt_search_data_t));
-	PT_RETV_IF(g_pt_info->search == NULL, PT_ERR_NO_MEMORY,
-			   "Failed to malloc");
-	//memset(g_pt_info->search, 0, sizeof(pt_search_data));
+	PT_RETV_IF(g_pt_info->search == NULL, PT_ERR_NO_MEMORY, "Failed to malloc");
 
 	g_pt_info->search->response_data.printerlist = NULL ;
 	g_pt_info->search->is_searching = 0 ;
 	g_pt_info->ueventsocket = -1;
 
-	//memset(g_pt_info->active_printer, 0, sizeof(g_pt_info->active_printer));
-	//memset(g_pt_info->option, 0, sizeof(g_pt_info->option));
-
 	__pt_register_hotplug_event(g_pt_info);
-
-	//_pt_vendor_option_init();
 
 	PRINT_SERVICE_FUNC_LEAVE;
 	return PT_ERR_NONE;

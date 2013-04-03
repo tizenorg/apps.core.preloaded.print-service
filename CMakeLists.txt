@@ -1,18 +1,14 @@
 cmake_minimum_required(VERSION 2.6)
 PROJECT(print-service C CXX)
 
-
 SET(PREFIX ${CMAKE_INSTALL_PREFIX})
 SET(EXEC_PREFIX "\${prefix}")
 SET(LIBDIR "\${prefix}/lib")
 SET(INCLUDEDIR "\${prefix}/include")
 SET(VERSION_MAJOR 1)
-SET(VERSION "${VERSION_MAJOR}.0.1")
-#SET(VERSION 1.0)
-
+SET(VERSION "${VERSION_MAJOR}.2.7")
 
 message(cmake install prefix : ${CMAKE_INSTALL_PREFIX})
-
 
 FILE(GLOB SRCS src/*.c)
 
@@ -23,11 +19,10 @@ INCLUDE(FindPkgConfig)
 pkg_check_modules(utils_pkgs REQUIRED ecore eina dlog vconf capi-appfw-application)
 
 FOREACH(flag ${utils_pkgs_CFLAGS})
-        SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")
+	SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag} -fdata-sections -ffunction-sections -Wl,--gc-sections")
 ENDFOREACH(flag)
 
 LINK_DIRECTORIES(/usr/lib)
-
 
 SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} -g -fno-omit-frame-pointer -finstrument-functions")
 #SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} -DEXPORT_API=\"\" ")
@@ -43,7 +38,7 @@ ADD_DEFINITIONS("-Wall") #enable all warnings
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRCS})  
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES SOVERSION ${VERSION_MAJOR})
-SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES VERSION ${VERSION}) 
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES VERSION ${VERSION})
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${pkgs_LDFLAGS} -lcups)
 
@@ -65,5 +60,5 @@ INSTALL(FILES ${samsung_ppds} DESTINATION /usr/share/cups/ppd/samsung/)
 FILE(GLOB epson_ppds "${CMAKE_CURRENT_SOURCE_DIR}/data/epson/*.drv.gz" )
 INSTALL(FILES ${epson_ppds} DESTINATION /usr/share/cups/ppd/epson/)
 
-ADD_SUBDIRECTORY(getppd)
+ADD_SUBDIRECTORY(libptdb)
 ADD_SUBDIRECTORY(TC)

@@ -71,7 +71,7 @@ static pt_printer_info_t *pt_util_make_printer_info(const char *device_info,
 	char *device_name = NULL;
 	int ret = 0;
 	ret = pt_utils_get_mfg_mdl(device_make_and_model, &device_mfg, &device_mdl);
-	if ( ret != PT_ERR_NONE) {
+	if (ret != PT_ERR_NONE) {
 		PT_IF_FREE_MEM(localdetail);
 		PT_IF_FREE_MEM(device_mfg);
 		PT_IF_FREE_MEM(device_mdl);
@@ -116,56 +116,6 @@ static pt_printer_info_t *pt_util_make_printer_info(const char *device_info,
 	PT_IF_FREE_MEM(device_name);
 
 	return localdetail;
-}
-
-static void pt_debug_print_device_attr(ipp_attribute_t *attr)
-{
-	PT_RET_IF(attr == NULL, "Invalid argument");
-	/* CUPS 1.6.1 support new ippGet function
-		ippGetBoolean
-		ippGetCollection
-		ippGetCount
-		ippGetDate
-		ippGetGroupTag
-		ippGetInteger
-		ippGetName
-		ippGetOperation
-		ippGetRange
-		ippGetRequestId
-		ippGetResolution
-		ippGetState
-		ippGetStatusCode
-		ippGetString
-		ippGetValueTag
-		ippGetVersion
-	  */
-	if (ippGetValueTag(attr) == IPP_TAG_TEXT || ippGetValueTag(attr) == IPP_TAG_URI) {
-		PT_DEBUG("grp=[%d] name=[%s] text=[%s]", ippGetGroupTag(attr), (ippGetName(attr) ==NULL)?"nill":ippGetName(attr), ippGetString(attr, 0, NULL));
-	} else if (ippGetValueTag(attr) == IPP_TAG_INTEGER) {
-		PT_DEBUG("grp=[%d] name=[%s] int=[%d]", ippGetGroupTag(attr), (ippGetName(attr)==NULL)?"nill":ippGetName(attr), ippGetInteger(attr,0));
-	} else if (ippGetValueTag(attr) == IPP_TAG_BOOLEAN) {
-		PT_DEBUG("grp=[%d] name=[%s] bool=[%d]", ippGetGroupTag(attr), (ippGetName(attr)==NULL)?"nill":ippGetName(attr), ippGetBoolean(attr,0));
-	} else if (ippGetValueTag(attr) == IPP_TAG_RESOLUTION) {
-		int xres = -1;
-		int yres = -1;
-		ipp_res_t units = -1;
-		xres = ippGetResolution(attr, 0, &yres, &units);
-		PT_DEBUG("grp=[%d] name=[%s] res=[%d,%d, %d]", ippGetGroupTag(attr), (ippGetName(attr)==NULL)?"nill":ippGetName(attr),
-				 xres, yres, units);
-	} else if (ippGetValueTag(attr) == IPP_TAG_RANGE) {
-		int uppper = -1;
-		int lower = -1;
-		lower = ippGetRange(attr, 0, &uppper);
-		PT_DEBUG("grp=[%d] name=[%s] range=[%d,%d]", ippGetGroupTag(attr), (ippGetName(attr)==NULL)?"nill":ippGetName(attr), uppper, lower);
-	} else if (ippGetValueTag(attr) == IPP_TAG_EVENT_NOTIFICATION) {
-		PT_DEBUG("IPP_TAG_EVENT_NOTIFICATION");
-		PT_DEBUG("grp=[%d] name=[%s] value_tag=[%d]", ippGetGroupTag(attr), (ippGetName(attr)==NULL)?"nill":ippGetName(attr), ippGetValueTag(attr));
-	} else if (ippGetValueTag(attr) == IPP_TAG_SUBSCRIPTION) {
-		PT_DEBUG("grp=[%d] name=[%s] value_tag=[%d]", ippGetGroupTag(attr), (ippGetName(attr)==NULL)?"nill":ippGetName(attr), ippGetValueTag(attr));
-	} else {
-		PT_DEBUG("grp=[%d] name=[%s] value_tag=[%d]", ippGetGroupTag(attr), (ippGetName(attr)==NULL)?"nill":ippGetName(attr), ippGetValueTag(attr));
-	}
-
 }
 
 static void pt_util_add_printer_to_hashlist(GHashTable *printer_hashlist, pt_printer_info_t *printer)
@@ -295,7 +245,6 @@ static void searching_thread_notify_cb(void *data, Ecore_Thread *thread, void *m
 
 	for (attr = ippFirstAttribute(response); attr != NULL; attr = ippNextAttribute(response)) {
 
-		pt_debug_print_device_attr(attr);
 
 		if (ippGetGroupTag(attr) == IPP_TAG_ZERO) {
 			PT_DEBUG("-----------------------------------------");
@@ -333,8 +282,8 @@ static void searching_thread_notify_cb(void *data, Ecore_Thread *thread, void *m
 
 	pt_util_append_printer(search_data, printer_hashlist);
 	g_hash_table_destroy(printer_hashlist);
-
 	ippDelete(response);
+
 	search_data->user_cb(&search_data->response_data);
 
 	PRINT_SERVICE_FUNC_LEAVE;

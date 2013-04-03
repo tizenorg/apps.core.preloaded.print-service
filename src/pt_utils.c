@@ -372,5 +372,6 @@ void pt_utils_remove_files_in(const char *path)
 			PT_DEBUG("Not existed %s, just skip", path);
 		}
 	}
+	PT_IF_FREE_MEM(cwd);
 	return;
 }

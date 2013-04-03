@@ -21,23 +21,31 @@
 #include <math.h>
 #include <cups/ipp.h>
 #include <cups/ppd.h>
-//#include <glib/gprintf.h>
-//#include <vconf.h>
-//#include <vconf-keys.h>
-//#include <sys/types.h>
-//#include <sys/socket.h>
-//#include <linux/types.h>
-//#include <linux/netlink.h>
-//#include <errno.h>
-//#include <unistd.h>
-//#include <arpa/inet.h>
-//#include <netinet/in.h>
-//#include <sys/ioctl.h>
-//#include <app.h>
 
 #include "pt_common.h"
 #include "pt_debug.h"
 #include "pt_optionmapping.h"
+
+/**
+ *      This API let the app set page ranges option for active printer, if not find active printer, will use default printer
+ *      @return   If success, return PT_ERR_NONE, else return the other error code as defined in pt_err_t
+ *      @param[in] ranges page range string
+ */
+int pt_set_print_option_page_range(const char *ranges)
+{
+        PRINT_SERVICE_FUNC_ENTER;
+        PT_RETV_IF(g_pt_info == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
+        PT_RETV_IF(ranges == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
+
+        char buf[MAX_SIZE] = {0};
+        snprintf(buf, MAX_SIZE, "%s", ranges);
+        g_pt_info->num_options = cupsAddOption("page-ranges", buf, g_pt_info->num_options, &g_pt_info->job_options);
+        PT_DEBUG("num is %d", g_pt_info->num_options);
+        PT_DEBUG("options is %p", g_pt_info->job_options);
+
+        PRINT_SERVICE_FUNC_LEAVE;
+        return PT_ERR_NONE;
+}
 
 /**
  *	This API let the app set copies option for active printer, if not find active printer, will use default printer
@@ -47,7 +55,7 @@
 int pt_set_print_option_copies(int copies)
 {
 	PRINT_SERVICE_FUNC_ENTER;
-	PT_RETV_IF(g_pt_info == NULL || g_pt_info->option == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
+	PT_RETV_IF(g_pt_info == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
 	PT_RETV_IF(copies <= 0, PT_ERR_INVALID_PARAM, "Invalid argument");
 
 	char buf[MAX_SIZE] = {0};
@@ -63,14 +71,14 @@ int pt_set_print_option_copies(int copies)
 /**
  *	This API let the app set copies option for active printer, if not find active printer, will use default printer
  *	@return   If success, return PT_ERR_NONE, else return the other error code as defined in pt_err_t
- *	@param[in] copies the copy number
+ *	@param[in] --
  */
 int pt_set_print_option_color(void)
 {
 	PRINT_SERVICE_FUNC_ENTER;
-	PT_RETV_IF(g_pt_info == NULL || g_pt_info->option == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
+	PT_RETV_IF(g_pt_info == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
 
-	ppd_choice_t *choi = pt_selected_choice(PT_OPTION_ID_GRAYSCALE);
+	ppd_choice_t *choi = pt_selected_choice(PT_OPTION_ID_GRAYSCALE, PT_ORIENTATION_PORTRAIT);
 	if (choi) {
 		g_pt_info->num_options = cupsAddOption(choi->option->keyword, choi->choice, g_pt_info->num_options, &g_pt_info->job_options);
 	}
@@ -88,9 +96,9 @@ int pt_set_print_option_color(void)
 int pt_set_print_option_paper_type(void)
 {
 	PRINT_SERVICE_FUNC_ENTER;
-	PT_RETV_IF(g_pt_info == NULL || g_pt_info->option == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
+	PT_RETV_IF(g_pt_info == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
 
-	ppd_choice_t *choi = pt_selected_choice(PT_OPTION_ID_PAPER);
+	ppd_choice_t *choi = pt_selected_choice(PT_OPTION_ID_PAPER, PT_ORIENTATION_PORTRAIT);
 	if (choi) {
 		g_pt_info->num_options = cupsAddOption(choi->option->keyword, choi->choice, g_pt_info->num_options, &g_pt_info->job_options);
 	}
@@ -108,9 +116,9 @@ int pt_set_print_option_paper_type(void)
 int pt_set_print_option_quality(void)
 {
 	PRINT_SERVICE_FUNC_ENTER;
-	PT_RETV_IF(g_pt_info == NULL || g_pt_info->option == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
+	PT_RETV_IF(g_pt_info == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
 
-	ppd_choice_t *choi = pt_selected_choice(PT_OPTION_ID_QUALITY);
+	ppd_choice_t *choi = pt_selected_choice(PT_OPTION_ID_QUALITY, PT_ORIENTATION_PORTRAIT);
 	if (choi) {
 		g_pt_info->num_options = cupsAddOption(choi->option->keyword, choi->choice, g_pt_info->num_options, &g_pt_info->job_options);
 	}
@@ -126,15 +134,39 @@ int pt_set_print_option_quality(void)
 }
 
 /**
- *	This API let the app set paper option for active printer, if not find active printer, will use default printer
+ *	This API let the app set paper size option for active printer, if not find active printer, will use default printer
  *	@return   If success, return PT_ERR_NONE, else return the other error code as defined in pt_err_t
- *	@param[in] papersize the paper size
+ *	@param[in] --
  */
 int pt_set_print_option_papersize(void)
 {
 	PRINT_SERVICE_FUNC_ENTER;
 
-	ppd_choice_t *choi = pt_selected_choice(PT_OPTION_ID_PAPERSIZE);
+	ppd_choice_t *choi = pt_selected_choice(PT_OPTION_ID_PAPERSIZE, PT_ORIENTATION_PORTRAIT);
+	if (choi) {
+		g_pt_info->num_options = cupsAddOption(choi->option->keyword, choi->choice, g_pt_info->num_options, &g_pt_info->job_options);
+	}
+
+	PT_DEBUG("num is %d", g_pt_info->num_options);
+	PT_DEBUG("options is %p", g_pt_info->job_options);
+	if (choi) {
+		PT_DEBUG("%s=%s", choi->option->keyword, choi->choice);
+	}
+
+	PRINT_SERVICE_FUNC_LEAVE;
+	return PT_ERR_NONE;
+}
+
+/**
+ *	This API let the app set duplex option for active printer, if not find active printer, will use default printer
+ *	@return   If success, return PT_ERR_NONE, else return the other error code as defined in pt_err_t
+ *	@param[in] papersize the paper size
+ */
+int pt_set_print_option_duplex(pt_orientation_e orientation)
+{
+	PRINT_SERVICE_FUNC_ENTER;
+
+	ppd_choice_t *choi = pt_selected_choice(PT_OPTION_ID_DUPLEX, orientation);
 	if (choi) {
 		g_pt_info->num_options = cupsAddOption(choi->option->keyword, choi->choice, g_pt_info->num_options, &g_pt_info->job_options);
 	}
@@ -157,7 +189,7 @@ int pt_set_print_option_papersize(void)
 int pt_set_print_option_orientation(pt_orientation_e orientation)
 {
 	PRINT_SERVICE_FUNC_ENTER;
-	PT_RETV_IF(g_pt_info == NULL || g_pt_info->option == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
+	PT_RETV_IF(g_pt_info == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
 	PT_RETV_IF((orientation < PT_ORIENTATION_PORTRAIT) || (orientation > PT_ORIENTATION_LANDSCAPE)
 			   , PT_ERR_INVALID_PARAM, "Invalid argument");
 
@@ -183,7 +215,7 @@ int pt_set_print_option_orientation(pt_orientation_e orientation)
 int pt_set_print_option_scaleimage(pt_scaling_e scaling)
 {
 	PRINT_SERVICE_FUNC_ENTER;
-	PT_RETV_IF(g_pt_info == NULL || g_pt_info->option == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
+	PT_RETV_IF(g_pt_info == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
 
 	char scaling_option[MAX_SIZE] = {0};
 	char percent_size[MAX_SIZE] = {0};
@@ -222,7 +254,7 @@ int pt_set_print_option_scaleimage(pt_scaling_e scaling)
 int pt_set_print_option_imagesize(pt_imagesize_t *crop_image_info, const char *filepath, int res_x, int res_y)
 {
 	PRINT_SERVICE_FUNC_ENTER;
-	PT_RETV_IF(g_pt_info == NULL || g_pt_info->option == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
+	PT_RETV_IF(g_pt_info == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
 	PT_RETV_IF(filepath == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
 
 	char imagesize_option[MAX_SIZE] = {0};
@@ -281,30 +313,6 @@ int pt_set_print_option_imagesize(pt_imagesize_t *crop_image_info, const char *f
 	PT_DEBUG("num is %d", g_pt_info->num_options);
 	PT_DEBUG("options is %p", g_pt_info->job_options);
 	PT_DEBUG("imagesize_option :[%s %s]", imagesize_option, ppi_value);
-
-	PRINT_SERVICE_FUNC_LEAVE;
-	return PT_ERR_NONE;
-}
-
-/**
- *	This API let the app set image fit for the page size, if not find active printer, will use default printer
- *	@return   If success, return PT_ERR_NONE, else return the other error code as defined in pt_err_t
- */
-int pt_set_print_option_print_range(int from, int to)
-{
-	PRINT_SERVICE_FUNC_ENTER;
-	PT_RETV_IF(g_pt_info == NULL || g_pt_info->option == NULL, PT_ERR_INVALID_PARAM, "Invalid argument");
-
-	char range_option[MAX_SIZE] = {0};
-	if (from < 1) {
-		from = 1;
-	}
-	sprintf(range_option, "%d-%d", from, to);
-	g_pt_info->num_options = cupsAddOption("page-ranges", range_option, g_pt_info->num_options, &g_pt_info->job_options);
-
-	PT_DEBUG("num is %d", g_pt_info->num_options);
-	PT_DEBUG("options is %p", g_pt_info->job_options);
-	PT_DEBUG("print range option:[%s]", range_option);
 
 	PRINT_SERVICE_FUNC_LEAVE;
 	return PT_ERR_NONE;

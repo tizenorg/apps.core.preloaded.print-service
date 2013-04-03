@@ -23,7 +23,10 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <limits.h>
+#include <stdlib.h>
 
+#include <pt_db.h>
 #include "pt_debug.h"
 #include "pt_common.h"
 #include "pt_ppd.h"
@@ -42,6 +45,8 @@
 #define SAMSUNG_PPD_DIR "/opt/etc/cups/ppd/samsung"
 #define EPSON_PPD_DIR "/opt/etc/cups/ppd/epson"
 #define HP_PPD_DIR "/opt/etc/cups/ppd/hp"
+
+#define PPDC_PREFIX "ppdc: Writing ./"
 
 /*supported manufacturer printer*/
 const char *manufacturer[MANUFACTURER_NUM] = {"Samsung", "Hp", "Epson"};
@@ -68,20 +73,16 @@ int pt_get_printer_ppd(pt_printer_mgr_t *printer)
 	PT_DEBUG("printer->mdl %s", printer->mdl);
 	PT_DEBUG("printer->mfg %s", printer->mfg);
 
-	FILE *getppd = NULL;
 	FILE *result = NULL;
 
-	char *getppd_argv[3];
-	char model_name[PT_MAX_LENGTH] = {0,};
 	char gunzip_drv[PT_MAX_LENGTH] = {0,};
-	char *mfg_path = NULL;
 
-	snprintf(model_name, PT_MAX_LENGTH, "-m \"%s\"", printer->mdl);
-	getppd_argv[0] = model_name;
+	static pt_db *db_samsung = NULL;
+	static pt_db *db_epson = NULL;
+	static pt_db *db_hp = NULL;
+	char *output = NULL;
 
 	if (strncasecmp(printer->mfg, "Samsung", 7) == 0) {
-		mfg_path = "samsung";
-		getppd_argv[1] = " -i "SAMSUNG_DRV;
 		if (chdir(SAMSUNG_PPD_DIR)) {
 			PT_DEBUG("Failed to change directory");
 			return PT_ERR_FAIL;
@@ -98,12 +99,19 @@ int pt_get_printer_ppd(pt_printer_mgr_t *printer)
 				PT_DEBUG("%s is failed to popen error",gunzip_drv);
 				return PT_ERR_FAIL;
 			}
+			pclose(result);
 		}
+		if(!db_samsung) {
+			db_samsung = pt_create_db(SAMSUNG_DRV);
+			PT_DEBUG("db_samsung: %p", db_samsung);
+			if(!db_samsung) {
+				PT_DEBUG("Failed to create samsung database");
+				return PT_ERR_FAIL;
+			}
+		}
+		output = pt_extract_ppd(db_samsung, printer->mdl, PT_SEARCH_ALL);
+
 	} else if (strncasecmp(printer->mfg, "Hp", 2) == 0) {
-		snprintf(model_name, PT_MAX_LENGTH, "-a \"%s\"", printer->mdl);
-		getppd_argv[0] = model_name;
-		mfg_path = "hp";
-		getppd_argv[1] = " -i "HP_DRV;
 		if (chdir(HP_PPD_DIR)) {
 			PT_DEBUG("Failed to change directory");
 			return PT_ERR_FAIL;
@@ -120,10 +128,17 @@ int pt_get_printer_ppd(pt_printer_mgr_t *printer)
 				PT_DEBUG("%s is failed to popen error",gunzip_drv);
 				return PT_ERR_FAIL;
 			}
+			pclose(result);
 		}
+		if(!db_hp) {
+			db_hp = pt_create_db(HP_DRV);
+			if(!db_hp) {
+				PT_DEBUG("Failed to create hp database");
+				return PT_ERR_FAIL;
+			}
+		}
+		output = pt_extract_ppd(db_hp, printer->mdl, PT_SEARCH_ALL);
 	} else if (strncasecmp(printer->mfg, "Epson", 5) == 0) {
-		mfg_path = "epson";
-		getppd_argv[1] = " -i "EPSON_DRV;
 		if (chdir(EPSON_PPD_DIR)) {
 			PT_DEBUG("Failed to change directory");
 			return PT_ERR_FAIL;
@@ -140,48 +155,64 @@ int pt_get_printer_ppd(pt_printer_mgr_t *printer)
 				PT_DEBUG("%s is failed to popen error",gunzip_drv);
 				return PT_ERR_FAIL;
 			}
+			pclose(result);
 		}
+		if(!db_epson) {
+			db_epson = pt_create_db(EPSON_DRV);
+			if(!db_epson) {
+				PT_DEBUG("Failed to create epson database");
+				return PT_ERR_FAIL;
+			}
+		}
+		output = pt_extract_ppd(db_epson, printer->mdl, PT_SEARCH_ALL);
 	} else {
 		PT_DEBUG("Can't find PPD file");
 		return PT_ERR_FAIL;
 	}
 
-	if (result != NULL) {
-		pclose(result);
-	}
-
-	PT_DEBUG("/usr/bin/getppd %s%s",getppd_argv[0], getppd_argv[1]);
-	getppd_argv[2] = NULL;
-
-	char temp[PT_MAX_LENGTH] = {0,};
-	snprintf(temp, PT_MAX_LENGTH, "/usr/bin/getppd %s%s",getppd_argv[0], getppd_argv[1]);
-
-	getppd = popen(temp, "r");
-	PT_RETV_IF(getppd == NULL, PT_ERR_FAIL, "Can't popen() getppd");
-
-	char output[PT_MAX_LENGTH] = {0};
-	while (fgets(temp, PT_MAX_LENGTH, getppd) != NULL) {
-		strncpy(output, temp, sizeof(output));
-	}
-	pclose(getppd);
-
-	if (strstr(output, "ppdc: Writing ./")) {
-		snprintf(printer->ppd, MAX_PATH_SIZE, "%s/%s/%s", PPD_DIR, mfg_path, temp+strlen("ppdc: Writing ./"));
-		*strrchr(printer->ppd,'.') = '\0'; /* remove the last '.' returned by getppd */
-	} else {
-		PT_DEBUG("getppd returned an error: %s", temp);
-		PT_DEBUG("output: %s", output);
+	if(!output) {
+		PT_DEBUG("Can't find PPD file");
 		return PT_ERR_FAIL;
 	}
 
-	/*check the specified ppd file whether it is exist*/
-	FILE *fd = NULL;
-	fd = fopen(printer->ppd, "r");
-	PT_RETV_IF(fd == NULL, PT_ERR_FAIL, "Specified PPD file doesn't exist!");
-	fclose(fd);
+	char *filename = NULL;
+	gboolean res = g_str_has_prefix(output, PPDC_PREFIX);
+	if(res == TRUE) {
+		size_t len = strlen(PPDC_PREFIX);
+		filename = output+len;
+		size_t sublen = strlen(filename);
+		gboolean expected_suffix = g_str_has_suffix(filename, ".\n");
+		if(expected_suffix == TRUE) {
+			filename[sublen-2] = '\0';
+		} else {
+			PT_DEBUG("ppdc returned unexpected output:\n%s\n", output);
+			free(output);
+			return PT_ERR_FAIL;
+		}
+	} else {
+		PT_DEBUG("ppdc returned unexpected output:\n%s\n", output);
+		free(output);
+		return PT_ERR_FAIL;
+	}
 
-	PT_DEBUG("Succeed to get ppd[%s] by getppd", printer->ppd);
+	char *abspath = realpath(filename, NULL);
+	if(!abspath) {
+		PT_DEBUG("pathname canonicalization fails\n");
+		free(output);
+		return PT_ERR_FAIL;
+	}
 
+	if(strlen(abspath) >= PT_MAX_LENGTH) {
+		PT_DEBUG("ppd filename too long\n");
+		free(output);
+		return PT_ERR_FAIL;
+	}
+
+	bzero(printer->ppd, PT_MAX_LENGTH);
+
+	strncpy(printer->ppd, abspath, PT_MAX_LENGTH);
+	free(abspath);
+	free(output);
 	PRINT_SERVICE_FUNC_LEAVE;
 	return PT_ERR_NONE;
 }

@@ -50,7 +50,10 @@ typedef enum _pt_connection_type_e {
 
 typedef enum _pt_duplex_e {
 	PT_DUPLEX_OFF = 0,
-	PT_DUPLEX_ON,
+	PT_DUPLEX_NO_TUMBLE,
+	PT_DUPLEX_TUMBLE,
+	PT_DUPLEX_ANY,
+	PT_DUPLEX_MAX
 } pt_duplex_e;
 
 typedef enum _pt_collate_e {
@@ -181,6 +184,7 @@ typedef enum _pt_print_option_e {
 	PT_OPTION_ID_QUALITY,
 	PT_OPTION_ID_PAPER,
 	PT_OPTION_ID_GRAYSCALE,
+	PT_OPTION_ID_DUPLEX,
 	PT_OPTION_ID_MAX,
 } pt_print_option_e;
 
@@ -358,6 +362,13 @@ int pt_get_active_printer(pt_printer_mgr_t **printer);
 API int pt_set_active_printer(pt_printer_mgr_t *printer);
 
 /**
+ *      This API let the app set page ranges option for active printer, if not find active printer, will use default printer
+ *      @return   If success, return PT_ERR_NONE, else return the other error code as defined in pt_err_t
+ *      @param[in] ranges page range string
+ */
+API int pt_set_print_option_page_range(const char *ranges);
+
+/**
  *	This API let the app set copies option for active printer, if not find active printer, will use default printer
  *	@return   If success, return PT_ERR_NONE, else return the other error code as defined in pt_err_t
  *	@param[in] copies the copy number
@@ -407,13 +418,6 @@ API int pt_set_print_option_quality(void);
  *	@return   If success, return PT_ERR_NONE, else return the other error code as defined in pt_err_t
  */
 API int pt_set_print_option_paper_type(void);
-
-
-/**
- *	This API let the app set the print range (from page - to page), if not find active printer, will use default printer
- *	@return   If success, return PT_ERR_NONE, else return the other error code as defined in pt_err_t
- */
-API int pt_set_print_option_print_range(int from, int to);
 
 /**
  *	This API let the app start the print job on the active printer, if not find active printer, will use default printer

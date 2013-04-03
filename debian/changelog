@@ -1,3 +1,45 @@
+print-service (1.2.8-1) unstable; urgency=low
+
+  * Added pt_set_print_option_page_range()
+  * Clean up for Tizen 2.1 source open
+  * Updated samsung database & samsung.drv.gz
+  * Git: apps/home/print-service
+  * Tag: print-service_1.2.8-1
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Fri, 29 Mar 2013 22:23:49 +0900
+
+print-service (1.2.7-1) unstable; urgency=low
+
+  * Fixed Jira issues(S1-12172,S1-12503,S1-12502) by SRR
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.7-1
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Fri, 22 Mar 2013 23:22:29 +0900
+
+print-service (1.2.6-1) unstable; urgency=low
+
+  * Removed unused option field in pt_info_t structure
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.6-1
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Mon, 18 Mar 2013 15:17:32 +0900
+
+print-service (1.2.5-1) unstable; urgency=low
+
+  * Fixed to show unsupported printer in first searching
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.5-1
+
+ -- GangHeok Kim <gangheok.kim@samsung.com>  Fri, 15 Mar 2013 16:25:05 +0900
+
+print-service (1.2.4-15) unstable; urgency=low
+
+  * Applied getppd API and updated HP db by SRR
+  * Git: magnolia/apps/home/print-service
+  * Tag: print-service_1.2.4-15
+
+ -- Taeksu Shin <taeksu.shin@samsung.com>  Thu, 14 Mar 2013 23:26:36 +0900
+
 print-service (1.2.4-14) unstable; urgency=low
 
   * Fixed to check whether printer is unsupporteed
