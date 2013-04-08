@@ -355,6 +355,10 @@ void pt_utils_remove_files_in(const char *path)
 	ret = chdir(path);
 	if (ret == 0) {
 		dir = opendir(path);
+		if (dir == NULL) {
+			PT_IF_FREE_MEM(cwd);
+			return;
+		}
 		while ((entry = readdir(dir)) != NULL) {
 			PT_DEBUG("Remove %s", entry->d_name);
 			iret = remove(entry->d_name);

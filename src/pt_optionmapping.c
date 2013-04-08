@@ -852,6 +852,26 @@ static void testprint(int paper)
 }
 #endif
 
+static bool pt_validate_settings(int s, int q, int p, int c, int d)
+{
+        if (s < 0 || s >= paper_sizes->num_choices) {
+                return false;
+        }
+        if (q < PT_QUALITY_DRAFT || q > PT_QUALITY_HIGH) {
+                return false;
+        }
+        if (p < PT_PAPER_NORMAL || p > PT_PAPER_PHOTO) {
+                return false;
+        }
+        if (c < PT_GRAYSCALE_GRAYSCALE || c > PT_GRAYSCALE_COLOUR) {
+                return false;
+        }
+        if (d < PT_DUPLEX_OFF || d > PT_DUPLEX_TUMBLE) {
+                return false;
+        }
+        return true;
+}
+
 static void pt_try_settings(int s, int q, int p, int c, int d)
 {
 	int sPaperSize = aPaperSize;
@@ -860,51 +880,65 @@ static void pt_try_settings(int s, int q, int p, int c, int d)
 	int sColor = aColor;
 	int sDuplex = aDuplex;
 
-	aPaperSize = s;
-	aQuality = q;
-	aPaper = p;
-	aColor = c;
-	aDuplex = d;
-
-	if (!pt_is_enabled(PT_OPTION_ID_QUALITY, q) || !pt_is_enabled(PT_OPTION_ID_PAPER, p) ||
-		!pt_is_enabled(PT_OPTION_ID_GRAYSCALE, c) || !pt_is_enabled(PT_OPTION_ID_DUPLEX, d)) {
-
-		aPaperSize = sPaperSize;
-		aQuality = sQuality;
-		aPaper = sPaper;
-		aColor = sColor;
-		aDuplex = sDuplex;
+	if(pt_validate_settings(s, q, p, c, d)) {
+		if (!pt_is_enabled(PT_OPTION_ID_QUALITY, q) || !pt_is_enabled(PT_OPTION_ID_PAPER, p) ||
+			!pt_is_enabled(PT_OPTION_ID_GRAYSCALE, c) || !pt_is_enabled(PT_OPTION_ID_DUPLEX, d)) {
+			aPaperSize = sPaperSize;
+			aQuality = sQuality;
+			aPaper = sPaper;
+			aColor = sColor;
+			aDuplex = sDuplex;
+		} else {
+			aPaperSize = s;
+			aQuality = q;
+			aPaper = p;
+			aColor = c;
+			aDuplex = d;
+		}
 	}
 }
 
 void pt_load_user_choice(void) {
 	FILE *stream;
-	char buf[255];
+	char buf[255] = {0,};
 	char *args;
 	int s;
 	int q;
 	int p;
 	int c;
 	int d;
+	char *null_check = NULL;
 
 	stream = fopen(PT_USER_OPTION_CONFIG_FILE,"r");
 	if(stream == NULL) {
 		PT_DEBUG("Can't open settings file");
 		return;
 	}
-	while(fgets(buf, sizeof(buf)-1, stream) != NULL) {
-		args = strchr(buf, ',');
-		if(args == NULL) {
+	while(fgets(buf, sizeof(buf), stream) != NULL) {
+		null_check = strchr(buf, '\n');
+		if (null_check) {
+			*null_check = '\0';
+		}
+
+		gchar **tokens = g_strsplit((gchar *)buf, ",", 0);
+		if (g_strv_length(tokens) != 6) {
+			g_strfreev(tokens);
 			continue;
 		}
-		*args++ = '\0';
-		if (!strcasecmp(buf, aModelName)) {
-			if (5 == sscanf(args, "%d,%d,%d,%d,%d", &s, &q, &p, &c, &d)) {
-				pt_try_settings(s, q, p, c, d);
-			}
+
+		if (!strcasecmp(tokens[0], aModelName)) {
+			s = atoi(tokens[1]);
+			q = atoi(tokens[2]);
+			p = atoi(tokens[3]);
+			c = atoi(tokens[4]);
+			d = atoi(tokens[5]);
+			pt_try_settings(s, q, p, c, d);
+			g_strfreev(tokens);
 			break;
 		}
+		g_strfreev(tokens);
 	}
+	fclose(stream);
 }
 
 int pt_set_choice(int op, int ch)
@@ -1138,6 +1172,7 @@ void pt_save_user_choice(void) {
 	fpos_t position;
 	char buf[255];
 	char *args;
+	int ret = -1;
 
 	stream = fopen(PT_USER_OPTION_CONFIG_FILE,"r+");
 	if(stream == NULL) {
@@ -1156,14 +1191,22 @@ void pt_save_user_choice(void) {
 		}
 		*args++ = '\0';
 		if(!strcasecmp(buf, aModelName)) {
-			fsetpos(stream, &position);
+			ret = fsetpos(stream, &position);
+			if (ret == -1) {
+				fclose(stream);
+				return;
+			}
 			fprintf(stream, "%s,%03d,%03d,%03d,%03d,%03d\n", aModelName, aPaperSize, aQuality, aPaper, aColor, aDuplex);
 			fclose(stream);
 			return;
 		}
 		fgetpos(stream, &position);
 	}
-	fsetpos(stream, &position);
+	ret = fsetpos(stream, &position);
+	if (ret == -1) {
+		fclose(stream);
+		return;
+	}
 	fprintf(stream, "%s,%03d,%03d,%03d,%03d,%03d\n", aModelName, aPaperSize, aQuality, aPaper, aColor, aDuplex);
 	fclose(stream);
 }

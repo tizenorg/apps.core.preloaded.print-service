@@ -2,7 +2,7 @@
 
 Name:       print-service
 Summary:    print service library
-Version:    1.2.8
+Version:    1.2.9
 Release:    1
 Group:      System/Libraries
 License:    Flora Software License

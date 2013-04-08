@@ -208,9 +208,9 @@ int pt_get_printer_ppd(pt_printer_mgr_t *printer)
 		return PT_ERR_FAIL;
 	}
 
-	bzero(printer->ppd, PT_MAX_LENGTH);
+	memset(printer->ppd, '\0', PT_MAX_LENGTH);
 
-	strncpy(printer->ppd, abspath, PT_MAX_LENGTH);
+	strncpy(printer->ppd, abspath, PT_MAX_LENGTH-1);
 	free(abspath);
 	free(output);
 	PRINT_SERVICE_FUNC_LEAVE;

@@ -178,7 +178,8 @@ typedef enum _pt_vendor_e {
 } pt_vendor_e;
 
 typedef enum _pt_print_option_e {
-	PT_OPTION_ID_PAPERSIZE = 0,
+	PT_OPTION_ID_PRINTER = 0,
+	PT_OPTION_ID_PAPERSIZE,
 	PT_OPTION_ID_COPIES,
 	PT_OPTION_ID_RANGE,
 	PT_OPTION_ID_QUALITY,
