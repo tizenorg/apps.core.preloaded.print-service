@@ -7,16 +7,3 @@ how to use drvopt optimizer:
 2) compress received .drv file by gzip:
 	
 	gzip hp.drv
-
-
-how to use getdrv extractor:
-
-1) extract requred driver by model name:
-
-	getdrv -i stripped.drv -r <modelname>
-
-or
-
-extract required driver by Product attribute:
-
-	getdrv -p <product> -i hp.drv
