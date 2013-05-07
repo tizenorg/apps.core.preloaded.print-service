@@ -206,7 +206,7 @@ pt_file_info *pt_create_file_info(char *name, char *dir, pt_file_type type)
 	if(name) {
 		tmp_name = strdup(name);
 		if(!tmp_name) {
-			fprintf(stderr, "String duplicating fails\n");
+			PT_ERROR("String duplicating fails");
 			pt_free_file_info(info);
 			return NULL;
 		}
@@ -219,7 +219,7 @@ pt_file_info *pt_create_file_info(char *name, char *dir, pt_file_type type)
 	if(dir) {
 		tmp_dir = strdup(dir);
 		if(!tmp_dir) {
-			fprintf(stderr, "String duplicating fails\n");
+			PT_ERROR("String duplicating fails");
 			pt_free_file_info(info);
 			free(tmp_name);
 			return NULL;
@@ -290,13 +290,13 @@ pt_file *pt_create_file(pt_file_info *file_info)
 	if(file_info->file_type == PT_FILE_TMP) {
 		char *string = strdup(TEMPLATE);
 		if(!string) {
-			perror("Can't duplicate string with strdup()");
+			PT_ERROR("Can't duplicate string with strdup()");
 			return NULL;
 		}
 
 		char *drname = dirname(string);
 		if(g_mkdir_with_parents(drname, S_IRWXU | S_IRWXG) == -1) {
-			perror("Can't create nested directory path");
+			PT_ERROR("Can't create nested directory path");
 			PT_IF_FREE_MEM(string);
 			return NULL;
 		}
@@ -304,40 +304,40 @@ pt_file *pt_create_file(pt_file_info *file_info)
 
 		file = strdup(TEMPLATE);
 		if (!file) {
-			fprintf(stderr, "Can't duplicate string with strdup()\n");
+			PT_ERROR("Can't duplicate string with strdup()");
 			return NULL;
 		}
 
 		umask(MASK_MODE);
 		int filedesc = mkstemp(file);
 		if (filedesc == -1) {
-			perror("Can't create temp file");
+			PT_ERROR("Can't create temp file");
 			PT_IF_FREE_MEM(file);
 			return NULL;
 		}
 
 		fd = fdopen(filedesc, "w");
 		if(!fd) {
-			fprintf(stderr, "Call fdopen() failed\n");
+			PT_ERROR("Call fdopen() failed");
 			if(close(filedesc)) {
-				fprintf(stderr, "Closing file descriptor fails\n");
+				PT_ERROR("Closing file descriptor fails");
 			}
 			int rst = unlink(file);
 			if(rst) {
-				fprintf(stderr, "Unlink temporary file fails\n");
+				PT_ERROR("Unlink temporary file fails");
 			}
 			PT_IF_FREE_MEM(file);
 			return NULL;
 		}
 
 	} else {
-		fprintf(stderr, "pt_create_file: Not yet fully supported\n");
+		PT_ERROR("pt_create_file: Not yet fully supported");
 		return NULL;
 	}
 
 	pt_file *ptfile = (pt_file *)malloc(sizeof(pt_file));
 	if(!ptfile) {
-		fprintf(stderr, "Allocating memory fails\n");
+		PT_ERROR("Allocating memory fails");
 		if(fclose(fd)) {
 			PT_ERROR("File error: %s", strerror(errno));
 		}
@@ -356,7 +356,7 @@ char *reliable_read(int fd)
 	char *new_buffer;
 	char *buffer = malloc(BUFF_SIZE);
 	if (!buffer) {
-		fprintf(stderr, "call malloc() failed: %s\n", strerror(errno));
+		PT_ERROR("call malloc() failed: %s", strerror(errno));
 		return NULL;
 	}
 	memset(buffer, '\0', BUFF_SIZE);
@@ -530,14 +530,14 @@ pt_file *extract_drv_by_key(drvm drv, const char *key, pt_search_key type)
 
 		pt_file_info *file_info = pt_create_file_info(NULL, NULL, PT_FILE_TMP);
 		if(!file_info) {
-			fprintf(stderr, "Setting file mode fails\n");
+		PT_ERROR("Setting file mode fails");
 			return NULL;
 		}
 
 		file = pt_create_file(file_info);
 		if(!file) {
 			pt_free_file_info(file_info);
-			fprintf(stderr, "Creating file fails\n");
+			PT_ERROR("Creating file fails");
 			return NULL;
 		}
 
@@ -547,11 +547,11 @@ pt_file *extract_drv_by_key(drvm drv, const char *key, pt_search_key type)
 			uint32_t num = (mod->inform).buffer[i];
 			numstr = g_ptr_array_index(strings, num);
 			if(fputs(numstr, file->ptfile) == EOF) {
-				fprintf(stderr, "Writing data to temp file failed\n");
+				PT_ERROR("Writing data to temp file failed");
 				// FIXME: Here we should free memory
 				pt_free_file_info(file_info);
 				if(pt_free_file(file, PT_FREE_FILE_DEL)) {
-					fprintf(stderr, "Deleting temporary file fails\n");
+					PT_ERROR("Deleting temporary file fails");
 				}
 				return NULL;
 			}
@@ -559,9 +559,9 @@ pt_file *extract_drv_by_key(drvm drv, const char *key, pt_search_key type)
 
 		pt_free_file_info(file_info);
 		if(pt_sync_file(file)) {
-			fprintf(stderr, "Synchronize file with storage device fails\n");
+			PT_ERROR("Synchronize file with storage device fails");
 			if(pt_free_file(file, PT_FREE_FILE_DEL)) {
-				fprintf(stderr, "Deleting temporary file fails\n");
+				PT_ERROR("Deleting temporary file fails");
 			}
 			return NULL;
 		}
@@ -626,7 +626,7 @@ outstr *filter_string(const char *original)
 
 	outstr *string = (outstr*)malloc(sizeof(outstr));
 	if(!string) {
-		fprintf(stderr, "Allocating memory fails\n");
+		PT_ERROR("Allocating memory fails");
 		return NULL;
 	}
 	memset(string, '\0', sizeof(outstr));
@@ -655,7 +655,7 @@ outstr *filter_string(const char *original)
 			if (!value) {
 				clean_outstr(string);
 				free(string);
-				fprintf(stderr, "Can't allocate memory\n");
+				PT_ERROR("Can't allocate memory");
 				return NULL;
 			}
 			memset(value, '\0', strln+1);
@@ -675,7 +675,7 @@ outstr *filter_string(const char *original)
 		if (!value) {
 			clean_outstr(string);
 			free(string);
-			fprintf(stderr, "Can't allocate memory\n");
+			PT_ERROR("Can't allocate memory");
 			return NULL;
 		}
 		memset(value, '\0', strln+1);
@@ -700,7 +700,7 @@ outstr *filter_string(const char *original)
 	if (!value) {
 		clean_outstr(string);
 		free(string);
-		fprintf(stderr, "Can't allocate memory\n");
+		PT_ERROR("Can't allocate memory");
 		return NULL;
 	}
 	memset(value, '\0', strln+1);
@@ -718,12 +718,12 @@ char *filter_product(char *original, pt_search_key key)
 	outstr *result = NULL;
 
 	if (!original) {
-		fprintf(stderr, "original is null\n");
+		PT_ERROR("original is null");
 		return NULL;
 	}
 	char *copied = malloc(strlen(original)+1);
 	if (!copied) {
-		fprintf(stderr, "Can't allocate memory\n");
+		PT_ERROR("Can't allocate memory");
 		return NULL;
 	}
 
@@ -798,7 +798,7 @@ char *filter(char *original, pt_search_key key)
 	char *token = NULL;
 	char *copied = malloc(strlen(original)+1);
 	if (!copied) {
-		fprintf(stderr, "Can't allocate memory\n");
+		PT_ERROR("Can't allocate memory");
 		return NULL;
 	}
 	char *full_string = copied;
@@ -817,7 +817,7 @@ char *filter(char *original, pt_search_key key)
 			value = malloc(strlen(token)+1);
 			if (!value) {
 				free(full_string);
-				fprintf(stderr, "Can't allocate memory\n");
+				PT_ERROR("Can't allocate memory");
 				return NULL;
 			}
 			strcpy(value, token);
@@ -829,14 +829,13 @@ char *filter(char *original, pt_search_key key)
 				} else {
 					free(full_string);
 					free(value);
-					printf("String contains unexpected symbols:\n");
-					printf("%s\n", original);
+					PT_DEBUG("String contains unexpected symbols: %s", original);
 					return NULL;
 				}
 			}
 		} else {
 			free(full_string);
-			printf("String which contains %s is not correct", original);
+			PT_DEBUG("String which contains %s is not correct", original);
 			return NULL;
 		}
 	}
@@ -880,7 +879,7 @@ drvm *read_drv(FILE *fd)
 
 	drv = (drvm *)calloc(1, sizeof(drvm));
 	if (!drv) {
-		fprintf(stderr, "Can't allocate memory\n");
+		PT_ERROR("Can't allocate memory");
 		return NULL;
 	}
 
@@ -888,13 +887,13 @@ drvm *read_drv(FILE *fd)
 
 	result = fread(&len, sizeof(uint32_t), 1, fd);
 	if (result != 1) {
-		fprintf(stderr, "Can't read data from file\n");
+		PT_ERROR("Can't read data from file");
 		pt_free_drvm(drv);
 		return NULL;
 	}
 
 	if(len == 0 || len > UINT32_MAX) {
-		fprintf(stderr, "Invalid length(%d)\n", len);
+		PT_ERROR("Invalid length(%d)", len);
 		pt_free_drvm(drv);
 		return NULL;
 	}
@@ -916,17 +915,17 @@ drvm *read_drv(FILE *fd)
 
 	result = fread(&len, sizeof(uint32_t), 1, fd);
 	if (result != 1) {
-		fprintf(stderr, "Can't read data from file\n");
+		PT_ERROR("Can't read data from file");
 		void *ptr = g_ptr_array_free(models, TRUE);
 		if(ptr) {
-			perror("freeing memory fails");
+			PT_ERROR("freeing memory fails");
 		}
 		free(drv);
 		return NULL;
 	}
 
 	if (len == 0 || len > UINT32_MAX) {
-		fprintf(stderr, "Invalid length(%d)\n", len);
+		PT_ERROR("Invalid length(%d)", len);
 		pt_free_drvm(drv);
 		return NULL;
 	}
@@ -944,14 +943,14 @@ drvm *read_drv(FILE *fd)
 	for (int i = 0; i < length; ++i) {
 		string = NULL;
 		if((read = getline(&string, &size_buffer, fd)) == -1) {
-			fprintf(stderr, "Can't read line from file\n");
+			PT_ERROR("Can't read line from file");
 			void *ptr = g_ptr_array_free(strings, TRUE);
 			if(ptr) {
-				perror("freeing memory fails");
+				PT_ERROR("freeing memory fails");
 			}
 			ptr = g_ptr_array_free(models, TRUE);
 			if(ptr) {
-				perror("freeing memory fails");
+				PT_ERROR("freeing memory fails");
 			}
 			free(drv);
 			return NULL;
@@ -971,13 +970,13 @@ model *read_model(FILE *fd)
 	mod = malloc(sizeof(model));
 	uint32_t len;
 	if (!mod) {
-		fprintf(stderr, "Can't allocate memory\n");
+		PT_ERROR("Can't allocate memory");
 		return NULL;
 	}
 
 	result = fread(&len, sizeof(uint32_t), 1, fd);
 	if(result != 1) {
-		fprintf(stderr, "Can't read data from file\n");
+		PT_ERROR("Can't read data from file");
 		pt_free_model(mod);
 		return NULL;
 	}
@@ -987,13 +986,13 @@ model *read_model(FILE *fd)
 
 	result = fread(&len, sizeof(uint32_t), 1, fd);
 	if(result != 1) {
-		fprintf(stderr, "Can't read data from file\n");
+		PT_ERROR("Can't read data from file");
 		pt_free_model(mod);
 		return NULL;
 	}
 
 	if(len == 0 || len > UINT32_MAX) {
-		fprintf(stderr, "Invalid length(%d)\n", len);
+		PT_ERROR("Invalid length(%d)", len);
 		pt_free_model(mod);
 		return NULL;
 	}
@@ -1001,7 +1000,7 @@ model *read_model(FILE *fd)
 	length = len;
 	if ((length >> 30) > 0)
 	{
-		fprintf(stderr, "Integer overflow\n");
+		PT_ERROR("Integer overflow");
 		pt_free_model(mod);
 		return NULL;
 	}
@@ -1009,7 +1008,7 @@ model *read_model(FILE *fd)
 	uint32_t size_buffer = length * sizeof(uint32_t);
 
 	if(!((mod->product).buffer = malloc(size_buffer))) {
-		fprintf(stderr, "Can't allocate memory\n");
+		PT_ERROR("Can't allocate memory");
 		pt_free_model(mod);
 		return NULL;
 	}
@@ -1017,7 +1016,7 @@ model *read_model(FILE *fd)
 
 	result = fread((mod->product).buffer, size_buffer, 1, fd);
 	if(result != 1) {
-		fprintf(stderr, "Can't read data from file\n");
+		PT_ERROR("Can't read data from file");
 		pt_free_model(mod);
 		return NULL;
 	}
@@ -1026,13 +1025,13 @@ model *read_model(FILE *fd)
 
 	result = fread(&len, sizeof(uint32_t), 1, fd);
 	if(result != 1) {
-		fprintf(stderr, "Can't read data from file\n");
+		PT_ERROR("Can't read data from file");
 		pt_free_model(mod);
 		return NULL;
 	}
 
 	if(len == 0 || len > UINT32_MAX) {
-		fprintf(stderr, "Invalid length(%d)\n", len);
+		PT_ERROR("Invalid length(%d)", len);
 		pt_free_model(mod);
 		return NULL;
 	}
@@ -1040,21 +1039,21 @@ model *read_model(FILE *fd)
 	length = len;
 	if ((length>>(32 - sizeof(uint32_t))) > 0)
 	{
-		fprintf(stderr, "Integer overflow\n");
+		PT_ERROR("Integer overflow");
 		pt_free_model(mod);
 		return NULL;
 	}
 
 	size_buffer = length * sizeof(uint32_t);
 	if(!(mod->inform.buffer = malloc(size_buffer))) {
-		fprintf(stderr, "Can't allocate memory\n");
+		PT_ERROR("Can't allocate memory");
 		pt_free_model(mod);
 		return NULL;
 	}
 	mod->inform.len = length;
 	result = fread(mod->inform.buffer, size_buffer, 1, fd);
 	if(result != 1) {
-		fprintf(stderr, "Can't read data from file\n");
+		PT_ERROR("Can't read data from file");
 		pt_free_model(mod);
 		return NULL;
 	}
@@ -1178,15 +1177,15 @@ char* pt_extract_ppd(pt_db *database, const char *search, pt_search type)
 	char *output = pt_exec_ppdc(file);
 	if(!output) {
 		// Handle error
-		PT_ERROR("Executing ppdc fails\n");
+		PT_ERROR("Executing ppdc fails");
 		if(pt_free_file(file, PT_FREE_FILE_DEL)) {
-			fprintf(stderr, "Freeing memory fails\n");
+			PT_ERROR("[%s] Can't free memory", search);
 		}
 		return NULL;
 	}
 
 	if(pt_free_file(file, PT_FREE_FILE_DEL)) {
-		fprintf(stderr, "Freeing memory fails\n");
+		PT_ERROR("Freeing memory fails");
 		free(output);
 		return NULL;
 	}
