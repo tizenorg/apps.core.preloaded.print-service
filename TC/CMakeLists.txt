@@ -5,7 +5,7 @@ SET(PACKAGE_NAME print-service)
 
 SET(PREFIX /usr)
 SET(BINDIR "${PREFIX}/bin")
-SET(LIBDIR "${PREFIX}/lib")
+SET(LIBDIR ${LIB_INSTALL_DIR})
 SET(SRCS ppd_compare.c)
 
 SET(DB_LIB_NAME ptdb)
@@ -88,7 +88,7 @@ INSTALL(TARGETS ${GETPPD} DESTINATION ${BINDIR})
 
 
 # Compile and install getppdvalue
-SET(getppdvalue_LDFLAGS "-Wl -lcups")
+SET(getppdvalue_LDFLAGS "-Wl,-lcups")
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRCS})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${getppdvalue_LDFLAGS})

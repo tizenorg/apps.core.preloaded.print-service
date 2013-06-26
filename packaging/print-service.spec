@@ -54,7 +54,7 @@ Set of utilities for testing different parts of library
 %setup -q
 
 %build
-cmake . -DCMAKE_INSTALL_PREFIX=%{_prefix} -DENABLE_OM_TESTS=On
+%cmake . -DENABLE_OM_TESTS=On
 
 %install
 rm -rf %{buildroot}
@@ -120,9 +120,6 @@ fi
 %postun
 /sbin/ldconfig
 
-%post devel
-chmod 644 /usr/lib/pkgconfig/print-service.pc
-chmod 644 /usr/include/print-service/pt_api.h
 
 %files
 %manifest print-service.manifest
@@ -133,7 +130,7 @@ chmod 644 /usr/include/print-service/pt_api.h
 %exclude %{_libdir}/libopmap.so*
 
 %files devel
-%defattr(-,root,root,-)
+%defattr(644,root,root,-)
 %{_includedir}/print-service/*.h
 %{_libdir}/pkgconfig/*
 
