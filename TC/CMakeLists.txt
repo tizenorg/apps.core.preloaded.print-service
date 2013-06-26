@@ -88,7 +88,7 @@ INSTALL(TARGETS ${GETPPD} DESTINATION ${BINDIR})
 
 
 # Compile and install getppdvalue
-SET(getppdvalue_LDFLAGS "-Wl -lcups")
+SET(getppdvalue_LDFLAGS "-Wl,-lcups")
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SRCS})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${getppdvalue_LDFLAGS})
