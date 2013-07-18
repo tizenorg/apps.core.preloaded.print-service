@@ -7,6 +7,9 @@ Release:    1
 Group:      System/Libraries
 License:    Flora Software License
 Source0:    %{name}-%{version}.tar.gz
+Source1001: print-service.manifest
+Source1002: print-driver-data.manifest
+Source1003: print-service-tests.manifest 
 BuildRequires: cmake
 BuildRequires: pkgconfig(dlog)
 BuildRequires: pkgconfig(eina)
@@ -54,6 +57,9 @@ Set of utilities for testing different parts of library
 %setup -q
 
 %build
+cp %{SOURCE1001} .
+cp %{SOURCE1002} .
+cp %{SOURCE1003} .
 %cmake . -DENABLE_OM_TESTS=On
 
 %install
@@ -82,18 +88,6 @@ then
 	mkdir -p /opt/etc/cups/ppd/samsung
 fi
 chown -R 5000:5000 /opt/etc/cups/ppd
-
-if [ -f /usr/lib/rpm-plugins/msm.so ]
-then
-	chsmack -a mobileprint /opt/etc/cups/ppd/
-	chsmack -a mobileprint /opt/etc/cups/ppd/hp
-	chsmack -a mobileprint /opt/etc/cups/ppd/epson
-	chsmack -a mobileprint /opt/etc/cups/ppd/samsung
-	chsmack -t /opt/etc/cups/ppd
-	chsmack -t /opt/etc/cups/ppd/hp
-	chsmack -t /opt/etc/cups/ppd/epson
-	chsmack -t /opt/etc/cups/ppd/samsung
-fi
 
 %post -n print-driver-data
 mkdir -p /usr/share/cups/model/samsung
@@ -146,6 +140,7 @@ fi
 %exclude %{DATADIR}/etc/cups/ppd/samsung.list
 
 %files -n print-service-tests
+%manifest print-service-tests.manifest
 %defattr(-,root,root,-)
 %{_bindir}/getppdvalue
 %attr(0755,root,root) %{_bindir}/ppd_test.sh
