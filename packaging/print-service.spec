@@ -1,52 +1,52 @@
-%global DATADIR /opt
-
 Name:       print-service
-Summary:    print service library
+Summary:    Print service library
 Version:    1.2.9
-Release:    1
+Release:    0
 Group:      System/Libraries
-License:    Flora Software License
+License:    Flora
 Source0:    %{name}-%{version}.tar.gz
 Source1001: print-service.manifest
 Source1002: print-driver-data.manifest
 Source1003: print-service-tests.manifest 
-BuildRequires: cmake
-BuildRequires: pkgconfig(dlog)
-BuildRequires: pkgconfig(eina)
-BuildRequires: pkgconfig(ecore)
-BuildRequires: pkgconfig(vconf)
-BuildRequires: glib2-devel
-BuildRequires: binutils-devel
-BuildRequires: cups-devel
-BuildRequires: libxml2-devel
-BuildRequires: capi-appfw-application-devel
-Requires: glib2
-Requires: cups
-Requires(post):  /sbin/ldconfig
-Requires(postun):  /sbin/ldconfig
+BuildRequires:    cmake
+BuildRequires:    pkgconfig(dlog)
+BuildRequires:    pkgconfig(eina)
+BuildRequires:    pkgconfig(ecore)
+BuildRequires:    pkgconfig(vconf)
+BuildRequires:    pkgconfig(libtzplatform-config)
+BuildRequires:    glib2-devel
+BuildRequires:    binutils-devel
+BuildRequires:    cups-devel
+BuildRequires:    libxml2-devel
+BuildRequires:    capi-appfw-application-devel
+Requires:         tizen-platform-config-tools
+Requires:         cups
+Requires(post):   /sbin/ldconfig
+Requires(postun): /sbin/ldconfig
+
 BuildRoot:  %{_tmppath}/%{name}-%{version}-build
 
 %description
-print-service library
+Print-service library
 
 %package devel
-Summary:    print library - development file
+Summary:    Print library - development file
 Group:      Development/Libraries
 Requires:   %{name} = %{version}-%{release}
 
 %description devel
-print library - development file
+Print library - development file
 
 %package -n print-driver-data
-Summary:    printer data - ppd, cts, data files
+Summary:    Printer data - ppd, cts, data files
 Group:      Development/Libraries
 Requires:   %{name} = %{version}-%{release}
 
 %description -n print-driver-data
-printer data - ppd, cts, data files
+Printer data - ppd, cts, data files
 
 %package tests
-Summary:    testing utilities
+Summary:    Testing utilities
 Group:      Development/Libraries
 Requires:   %{name} = %{version}-%{release}
 
@@ -60,7 +60,7 @@ Set of utilities for testing different parts of library
 cp %{SOURCE1001} .
 cp %{SOURCE1002} .
 cp %{SOURCE1003} .
-%cmake . -DENABLE_OM_TESTS=On
+%cmake . -DENABLE_OM_TESTS=On -DCMAKE_ETC=%{TZ_SYS_ETC}
 
 %install
 rm -rf %{buildroot}
@@ -75,19 +75,19 @@ rm -rf %{buildroot}
 %post
 /sbin/ldconfig
 
-if ! [ -d /opt/etc/cups/ppd/hp ]
+if ! [ -d %{TZ_SYS_ETC}/cups/ppd/hp ]
 then
-	mkdir -p /opt/etc/cups/ppd/hp
+	mkdir -p %{TZ_SYS_ETC}/cups/ppd/hp
 fi
-if ! [ -d /opt/etc/cups/ppd/epson ]
+if ! [ -d %{TZ_SYS_ETC}/cups/ppd/epson ]
 then
-	mkdir -p /opt/etc/cups/ppd/epson
+	mkdir -p %{TZ_SYS_ETC}/cups/ppd/epson
 fi
-if ! [ -d /opt/etc/cups/ppd/samsung ]
+if ! [ -d %{TZ_SYS_ETC}/cups/ppd/samsung ]
 then
-	mkdir -p /opt/etc/cups/ppd/samsung
+	mkdir -p %{TZ_SYS_ETC}/cups/ppd/samsung
 fi
-chown -R 5000:5000 /opt/etc/cups/ppd
+chown -R :%{TZ_SYS_USER_GROUP} %{TZ_SYS_ETC}/cups/ppd
 
 %post -n print-driver-data
 mkdir -p /usr/share/cups/model/samsung
@@ -98,17 +98,17 @@ if [ -e /usr/share/cups/model/samsung/cms ]
 then
 	rm /usr/share/cups/model/samsung/cms
 fi
-if [ -f /opt/etc/cups/ppd/hp/hp.drv ]
+if [ -f %{TZ_SYS_ETC}/cups/ppd/hp/hp.drv ]
 then
-	rm /opt/etc/cups/ppd/hp/hp.drv
+	rm %{TZ_SYS_ETC}/cups/ppd/hp/hp.drv
 fi
-if [ -f /opt/etc/cups/ppd/samsung/samsung.drv ]
+if [ -f %{TZ_SYS_ETC}/cups/ppd/samsung/samsung.drv ]
 then
-	rm /opt/etc/cups/ppd/samsung/samsung.drv
+	rm %{TZ_SYS_ETC}/cups/ppd/samsung/samsung.drv
 fi
-if [ -f /opt/etc/cups/ppd/epson/epson.drv ]
+if [ -f %{TZ_SYS_ETC}/cups/ppd/epson/epson.drv ]
 then
-	rm /opt/etc/cups/ppd/epson/epson.drv
+	rm %{TZ_SYS_ETC}/cups/ppd/epson/epson.drv
 fi
 
 %postun
@@ -134,10 +134,10 @@ fi
 /usr/share/license/print-driver-data
 %dir /usr/share/cups/ppd/
 /usr/share/cups/ppd/*
-%exclude %{DATADIR}/etc/cups/ppd/hp_product.list
-%exclude %{DATADIR}/etc/cups/ppd/hp.list
-%exclude %{DATADIR}/etc/cups/ppd/epson.list
-%exclude %{DATADIR}/etc/cups/ppd/samsung.list
+%exclude %{TZ_SYS_ETC}/cups/ppd/hp_product.list
+%exclude %{TZ_SYS_ETC}/cups/ppd/hp.list
+%exclude %{TZ_SYS_ETC}/cups/ppd/epson.list
+%exclude %{TZ_SYS_ETC}/cups/ppd/samsung.list
 
 %files -n print-service-tests
 %manifest print-service-tests.manifest
@@ -147,10 +147,10 @@ fi
 %attr(0755,root,root) %{_bindir}/test-opmap
 %attr(0755,root,root) %{_bindir}/print-test-opmap.sh
 %{_libdir}/libopmap.so*
-%attr(-,app,app) %{DATADIR}/etc/cups/ppd/hp.list
-%attr(-,app,app) %{DATADIR}/etc/cups/ppd/hp_product.list
-%attr(-,app,app) %{DATADIR}/etc/cups/ppd/epson.list
-%attr(-,app,app) %{DATADIR}/etc/cups/ppd/samsung.list
+%attr(-,-,%{TZ_SYS_USER_GROUP}) %{TZ_SYS_ETC}/cups/ppd/hp.list
+%attr(-,-,%{TZ_SYS_USER_GROUP}) %{TZ_SYS_ETC}/cups/ppd/hp_product.list
+%attr(-,-,%{TZ_SYS_USER_GROUP}) %{TZ_SYS_ETC}/cups/ppd/epson.list
+%attr(-,-,%{TZ_SYS_USER_GROUP}) %{TZ_SYS_ETC}/cups/ppd/samsung.list
 
 %changelog
 

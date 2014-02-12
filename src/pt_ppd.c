@@ -26,25 +26,28 @@
 #include <limits.h>
 #include <stdlib.h>
 
+/* For multi-user support */
+#include <tzplatform_config.h>
+
 #include <pt_db.h>
 #include "pt_debug.h"
 #include "pt_common.h"
 #include "pt_ppd.h"
 
 #define GETPPD "/usr/bin/getppd"
-#define CUPS_PPDDIR "/opt/etc/cups/ppd/"
-#define SAMSUNG_DRV "/opt/etc/cups/ppd/samsung/samsung.drv"
-#define SAMSUNG_DRV_GZ "/opt/etc/cups/ppd/samsung/samsung.drv.gz"
+#define CUPS_PPDDIR tzplatform_mkpath(TZ_SYS_ETC, "cups/ppd/")
+#define SAMSUNG_DRV tzplatform_mkpath(TZ_SYS_ETC, "cups/ppd/samsung/samsung.drv")
+#define SAMSUNG_DRV_GZ tzplatform_mkpath(TZ_SYS_ETC, "cups/ppd/samsung/samsung.drv.gz")
 #define SAMSUNG_DRV_GZ_ORG "/usr/share/cups/ppd/samsung/samsung.drv.gz"
-#define HP_DRV "/opt/etc/cups/ppd/hp/hp.drv"
-#define HP_DRV_GZ "/opt/etc/cups/ppd/hp/hp.drv.gz"
+#define HP_DRV tzplatform_mkpath(TZ_SYS_ETC, "cups/ppd/hp/hp.drv")
+#define HP_DRV_GZ tzplatform_mkpath(TZ_SYS_ETC, "cups/ppd/hp/hp.drv.gz")
 #define HP_DRV_GZ_ORG "/usr/share/cups/ppd/hp/hp.drv.gz"
-#define EPSON_DRV "/opt/etc/cups/ppd/epson/epson.drv"
-#define EPSON_DRV_GZ "/opt/etc/cups/ppd/epson/epson.drv.gz"
+#define EPSON_DRV tzplatform_mkpath(TZ_SYS_ETC, "cups/ppd/epson/epson.drv")
+#define EPSON_DRV_GZ tzplatform_mkpath(TZ_SYS_ETC, "cups/ppd/epson/epson.drv.gz")
 #define EPSON_DRV_GZ_ORG "/usr/share/cups/ppd/epson/epson.drv.gz"
-#define SAMSUNG_PPD_DIR "/opt/etc/cups/ppd/samsung"
-#define EPSON_PPD_DIR "/opt/etc/cups/ppd/epson"
-#define HP_PPD_DIR "/opt/etc/cups/ppd/hp"
+#define SAMSUNG_PPD_DIR tzplatform_mkpath(TZ_SYS_ETC, "cups/ppd/samsung")
+#define EPSON_PPD_DIR tzplatform_mkpath(TZ_SYS_ETC, "cups/ppd/epson")
+#define HP_PPD_DIR tzplatform_mkpath(TZ_SYS_ETC, "cups/ppd/hp")
 
 #define PPDC_PREFIX "ppdc: Writing ./"
 

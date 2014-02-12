@@ -16,7 +16,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 INCLUDE(FindPkgConfig)
 #pkg_check_modules(utils_pkgs REQUIRED ecore eina avahi cups dlog vconf capi-appfw-application)
-pkg_check_modules(utils_pkgs REQUIRED ecore eina dlog vconf capi-appfw-application)
+pkg_check_modules(utils_pkgs REQUIRED ecore eina dlog vconf capi-appfw-application libtzplatform-config)
 
 FOREACH(flag ${utils_pkgs_CFLAGS})
 	SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag} -fdata-sections -ffunction-sections -Wl,--gc-sections")

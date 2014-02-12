@@ -23,7 +23,7 @@
 #define MAX_PATH_SIZE		 512
 #define MAX_COMMAND_SIZE	 128*128
 #define MANUFACTURER_NUM	 3
-#define PPD_DIR				"/opt/etc/cups/ppd"
+#define PPD_DIR				 tzplatform_mkpath3(TZ_SYS_ETC, "cups", "ppd")
 
 /**
  *  This function let the app get ppd file for the specified printer

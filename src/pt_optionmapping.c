@@ -19,6 +19,10 @@
 
 #include <ctype.h>
 #include <stdbool.h>
+
+/* For multi-user support */
+#include <tzplatform_config.h>
+
 #include "pt_debug.h"
 #include "pt_common.h"
 #include "pt_utils.h"

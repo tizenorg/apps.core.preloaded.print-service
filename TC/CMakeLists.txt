@@ -7,6 +7,7 @@ SET(PREFIX /usr)
 SET(BINDIR "${PREFIX}/bin")
 SET(LIBDIR ${LIB_INSTALL_DIR})
 SET(SRCS ppd_compare.c)
+SET(ETC ${CMAKE_ETC})
 
 SET(DB_LIB_NAME ptdb)
 SET(GETPPD getppd)
@@ -16,61 +17,61 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE(FindPkgConfig)
 
 IF(ENABLE_OM_TESTS)
-	# Sources for OptionMapping tests's binaries
-	SET(SRCS_OM_TEST
-		test-automation.c)
+    # Sources for OptionMapping tests's binaries
+    SET(SRCS_OM_TEST
+        test-automation.c)
 
-	# OptionMapping test automation
-	# Sources for OptionMapping library
-	SET(SRCS_OM_LIB
-		../src/pt_optionmapping.c
-		../src/pt_optionkeywords.c
-		../src/pt_utils.c
-		../src/pt_ppd.c)
+    # OptionMapping test automation
+    # Sources for OptionMapping library
+    SET(SRCS_OM_LIB
+        ../src/pt_optionmapping.c
+        ../src/pt_optionkeywords.c
+        ../src/pt_utils.c
+        ../src/pt_ppd.c)
 
-	SET(VERSION_MAJOR 1)
-	SET(VERSION "${VERSION_MAJOR}.0.1")
-	SET(OPMAP_LIB_NAME opmap)
+    SET(VERSION_MAJOR 1)
+    SET(VERSION "${VERSION_MAJOR}.0.1")
+    SET(OPMAP_LIB_NAME opmap)
 
-	SET(OPMAP_TEST_NAME test-opmap)
-	SET(OPMAP_TEST_SCRIPT print-test-opmap.sh)
-	SET(HP_LIST 	   hp.list)
-	SET(HP_PRDLIST 	   hp_product.list)
-	SET(EPSON_LIST 	   epson.list)
-	SET(SAMSUNG_LIST   samsung.list)
-	SET(PRINTLIST_DIR /opt/etc/cups/ppd/)
+    SET(OPMAP_TEST_NAME test-opmap)
+    SET(OPMAP_TEST_SCRIPT print-test-opmap.sh)
+    SET(HP_LIST        hp.list)
+    SET(HP_PRDLIST     hp_product.list)
+    SET(EPSON_LIST     epson.list)
+    SET(SAMSUNG_LIST   samsung.list)
+    SET(PRINTLIST_DIR  ${ETC}/cups/ppd/)
 
-	ADD_LIBRARY(${OPMAP_LIB_NAME} SHARED ${SRCS_OM_LIB})
-	SET_TARGET_PROPERTIES(${OPMAP_LIB_NAME} PROPERTIES SOVERSION ${VERSION_MAJOR})
-	SET_TARGET_PROPERTIES(${OPMAP_LIB_NAME} PROPERTIES VERSION ${VERSION})
+    ADD_LIBRARY(${OPMAP_LIB_NAME} SHARED ${SRCS_OM_LIB})
+    SET_TARGET_PROPERTIES(${OPMAP_LIB_NAME} PROPERTIES SOVERSION ${VERSION_MAJOR})
+    SET_TARGET_PROPERTIES(${OPMAP_LIB_NAME} PROPERTIES VERSION ${VERSION})
 
-	pkg_check_modules(test_pkgs REQUIRED ecore eina dlog)
+    pkg_check_modules(test_pkgs REQUIRED ecore eina dlog libtzplatform-config)
 
-	FOREACH(flag ${test_pkgs_LDFLAGS})
+    FOREACH(flag ${test_pkgs_LDFLAGS})
         SET(OPMAP_TEST_LDFLAGS "${flag} ${OPMAP_TEST_LDFLAGS}")
-	ENDFOREACH(flag)
+    ENDFOREACH(flag)
 
-	SET(OPMAP_TEST_LDFLAGS "${OPMAP_TEST_LDFLAGS} -lcups")
+    SET(OPMAP_TEST_LDFLAGS "${OPMAP_TEST_LDFLAGS} -lcups")
 
-	ADD_EXECUTABLE(${OPMAP_TEST_NAME} ${SRCS_OM_TEST})
-	TARGET_LINK_LIBRARIES(${OPMAP_TEST_NAME} ${OPMAP_LIB_NAME})
-	TARGET_LINK_LIBRARIES(${OPMAP_TEST_NAME} ${OPMAP_TEST_LDFLAGS})
-	TARGET_LINK_LIBRARIES(${OPMAP_TEST_NAME} ${DB_LIB_NAME})
+    ADD_EXECUTABLE(${OPMAP_TEST_NAME} ${SRCS_OM_TEST})
+    TARGET_LINK_LIBRARIES(${OPMAP_TEST_NAME} ${OPMAP_LIB_NAME})
+    TARGET_LINK_LIBRARIES(${OPMAP_TEST_NAME} ${OPMAP_TEST_LDFLAGS})
+    TARGET_LINK_LIBRARIES(${OPMAP_TEST_NAME} ${DB_LIB_NAME})
 
-	ADD_CUSTOM_COMMAND(TARGET ${OPMAP_TEST_NAME} POST_BUILD
-					   COMMAND ./create-printlist.sh "hp" ${CMAKE_SOURCE_DIR} ${HP_LIST}
-					   COMMAND ./create-printlist.sh "hp_product" ${CMAKE_SOURCE_DIR} ${HP_PRDLIST}
-					   COMMAND ./create-printlist.sh "epson" ${CMAKE_SOURCE_DIR} ${EPSON_LIST}
-					   COMMAND ./create-printlist.sh "samsung" ${CMAKE_SOURCE_DIR} ${SAMSUNG_LIST}
-					   COMMENT "Generate list of printers")
+    ADD_CUSTOM_COMMAND(TARGET ${OPMAP_TEST_NAME} POST_BUILD
+                        COMMAND ./create-printlist.sh "hp" ${CMAKE_SOURCE_DIR} ${HP_LIST}
+                        COMMAND ./create-printlist.sh "hp_product" ${CMAKE_SOURCE_DIR} ${HP_PRDLIST}
+                        COMMAND ./create-printlist.sh "epson" ${CMAKE_SOURCE_DIR} ${EPSON_LIST}
+                        COMMAND ./create-printlist.sh "samsung" ${CMAKE_SOURCE_DIR} ${SAMSUNG_LIST}
+                        COMMENT "Generate list of printers")
 
-	INSTALL(TARGETS ${OPMAP_TEST_NAME} DESTINATION ${BINDIR})
-	INSTALL(TARGETS ${OPMAP_LIB_NAME} LIBRARY DESTINATION ${LIBDIR})
-	INSTALL(FILES ${HP_LIST} DESTINATION ${PRINTLIST_DIR})
-	INSTALL(FILES ${HP_PRDLIST} DESTINATION ${PRINTLIST_DIR})
-	INSTALL(FILES ${SAMSUNG_LIST} DESTINATION ${PRINTLIST_DIR})
-	INSTALL(FILES ${EPSON_LIST} DESTINATION ${PRINTLIST_DIR})
-	INSTALL(FILES ${OPMAP_TEST_SCRIPT} DESTINATION ${BINDIR})
+    INSTALL(TARGETS ${OPMAP_TEST_NAME} DESTINATION ${BINDIR})
+    INSTALL(TARGETS ${OPMAP_LIB_NAME} LIBRARY DESTINATION ${LIBDIR})
+    INSTALL(FILES ${HP_LIST} DESTINATION ${PRINTLIST_DIR})
+    INSTALL(FILES ${HP_PRDLIST} DESTINATION ${PRINTLIST_DIR})
+    INSTALL(FILES ${SAMSUNG_LIST} DESTINATION ${PRINTLIST_DIR})
+    INSTALL(FILES ${EPSON_LIST} DESTINATION ${PRINTLIST_DIR})
+    INSTALL(FILES ${OPMAP_TEST_SCRIPT} DESTINATION ${BINDIR})
 ENDIF(ENABLE_OM_TESTS)
 
 # Compile and install getppd wrapper

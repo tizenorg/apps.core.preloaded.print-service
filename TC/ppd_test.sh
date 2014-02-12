@@ -1,18 +1,20 @@
 #!/bin/sh
 
+eval $(tzplatform-get TZ_SYS_ETC)
+
 #used in extraction test
 hp_drvgz_path="/usr/share/cups/ppd/hp/hp.drv.gz"
 samsung_drvgz_path="/usr/share/cups/ppd/samsung/samsung.drv.gz"
 epson_drvgz_path="/usr/share/cups/ppd/epson/epson.drv.gz"
 
-hp_drv_path="/opt/etc/cups/ppd/hp/hp.drv"
-samsung_drv_path="/opt/etc/cups/ppd/samsung/samsung.drv"
-epson_drv_path="/opt/etc/cups/ppd/epson/epson.drv"
+hp_drv_path=$TZ_SYS_ETC"/cups/ppd/hp/hp.drv"
+samsung_drv_path=$TZ_SYS_ETC"/cups/ppd/samsung/samsung.drv"
+epson_drv_path=$TZ_SYS_ETC"/cups/ppd/epson/epson.drv"
 
-hp_list_path="/opt/etc/cups/ppd/hp.list"
-hp_product_path="/opt/etc/cups/ppd/hp_product.list"
-samsung_list_path="/opt/etc/cups/ppd/samsung.list"
-epson_list_path="/opt/etc/cups/ppd/epson.list"
+hp_list_path=$TZ_SYS_ETC"/cups/ppd/hp.list"
+hp_product_path=$TZ_SYS_ETC"/cups/ppd/hp_product.list"
+samsung_list_path=$TZ_SYS_ETC"/cups/ppd/samsung.list"
+epson_list_path=$TZ_SYS_ETC"/cups/ppd/epson.list"
 
 epson_extraction_complete=0
 samsung_extraction_complete=0
@@ -470,7 +472,7 @@ echo "	Validation TEST - Epson							"
 echo "===================================================================="
 
 EXTRACTION_COMPLETE=$epson_extraction_complete
-ORIGINAL_PPD_PATH="/opt/etc/cups/ppd/org_ppd/epson"
+ORIGINAL_PPD_PATH=$TZ_SYS_ETC"/cups/ppd/org_ppd/epson"
 VALID_PATH=$EPSON_VALID
 VALID_RESULT_PATH=$EPSON_VALID/result
 TEMP_PATH=$EPSON_TEMP
@@ -506,7 +508,7 @@ echo "	Validation TEST - Samsung							"
 echo "===================================================================="
 
 EXTRACTION_COMPLETE=$samsung_extraction_complete
-ORIGINAL_PPD_PATH="/opt/etc/cups/ppd/org_ppd/samsung"
+ORIGINAL_PPD_PATH=$TZ_SYS_ETC"/cups/ppd/org_ppd/samsung"
 VALID_PATH=$SAMSUNG_VALID
 VALID_RESULT_PATH=$SAMSUNG_VALID/result
 TEMP_PATH=$SAMSUNG_TEMP
@@ -542,7 +544,7 @@ echo "	Validation TEST - HP							"
 echo "===================================================================="
 
 EXTRACTION_COMPLETE=$hp_extraction_complete
-ORIGINAL_PPD_PATH="/opt/etc/cups/ppd/org_ppd/hp"
+ORIGINAL_PPD_PATH=$TZ_SYS_ETC"/cups/ppd/org_ppd/hp"
 VALID_PATH=$HP_VALID
 VALID_RESULT_PATH=$HP_VALID/result
 TEMP_PATH=$HP_TEMP

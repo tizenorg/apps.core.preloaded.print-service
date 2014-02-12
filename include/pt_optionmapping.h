@@ -51,7 +51,7 @@ typedef struct {
 } pt_resolution_keyword;
 
 #undef PT_OPTIONCUBE_TEST_PRINT
-#define PT_USER_OPTION_CONFIG_FILE "/opt/etc/cups/ppd/settings.cfg"
+#define PT_USER_OPTION_CONFIG_FILE tzplatform_mkpath(TZ_SYS_ETC, "cups/ppd/settings.cfg")
 
 ppd_choice_t *pt_selected_choice(int op, pt_orientation_e p);
 void pt_parse_options(ppd_file_t *ppd);
