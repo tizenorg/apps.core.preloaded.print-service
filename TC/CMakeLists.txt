@@ -7,6 +7,7 @@ SET(PREFIX /usr)
 SET(BINDIR "${PREFIX}/bin")
 SET(LIBDIR ${LIB_INSTALL_DIR})
 SET(SRCS ppd_compare.c)
+SET(ETC ${CMAKE_ETC})
 
 SET(DB_LIB_NAME ptdb)
 SET(GETPPD getppd)
@@ -38,13 +39,13 @@ IF(ENABLE_OM_TESTS)
 	SET(HP_PRDLIST 	   hp_product.list)
 	SET(EPSON_LIST 	   epson.list)
 	SET(SAMSUNG_LIST   samsung.list)
-	SET(PRINTLIST_DIR /opt/etc/cups/ppd/)
+	SET(PRINTLIST_DIR ${ETC}/cups/ppd/)
 
 	ADD_LIBRARY(${OPMAP_LIB_NAME} SHARED ${SRCS_OM_LIB})
 	SET_TARGET_PROPERTIES(${OPMAP_LIB_NAME} PROPERTIES SOVERSION ${VERSION_MAJOR})
 	SET_TARGET_PROPERTIES(${OPMAP_LIB_NAME} PROPERTIES VERSION ${VERSION})
 
-	pkg_check_modules(test_pkgs REQUIRED ecore eina dlog)
+	pkg_check_modules(test_pkgs REQUIRED ecore eina dlog libtzplatform-config)
 
 	FOREACH(flag ${test_pkgs_LDFLAGS})
         SET(OPMAP_TEST_LDFLAGS "${flag} ${OPMAP_TEST_LDFLAGS}")

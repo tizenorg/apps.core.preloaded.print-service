@@ -1,6 +1,8 @@
 #!/bin/bash
 
-PLIST_PATH="/opt/etc/cups/ppd/"
+eval $(tzplatform-get TZ_SYS_ETC)
+
+PLIST_PATH=$TZ_SYS_ETC"/cups/ppd/"
 HP_LIST="hp.list"
 EPSON_LIST="epson.list"
 SAMSUNG_LIST="samsung.list"
