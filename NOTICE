@@ -1,6 +1,6 @@
-Copyright (c) 2012 Samsung Electronics Co., Ltd. All rights reserved.
-Except as noted, this software is licensed under Flora License, Version 1.1
-Please, see the LICENSE.Flora file for Flora License, Version 1.1 terms and conditions.
+Copyright (c) Samsung Electronics Co., Ltd. All rights reserved.
+Except as noted, this software is licensed under Apache License, Version 2.
+Please, see the LICENSE.APLv2 file for Apache License terms and conditions.
 
 The GPL license applies to the files in these directories:
 
@@ -8,7 +8,7 @@ data/org_ppd/epson
 data/epson
 
 Several source codes may have its original copyright owner and/or
-be licensed under other than Flora License, Version 1.1, say, GNU Public License, Version 2.
+be licensed under other than Apache License, Version 2., say, GNU Public License, Version 2.
 Please, see copyright and license comments section in the header of each file,
 and the LICENSE.GPLv2 for GNU Public License, Version 2 terms and conditions
 
@@ -222,6 +222,6 @@ data/org_ppd/hp/hp-officejet_pro_476_576_series-ps.ppd
 data/org_ppd/hp/hp-officejet_pro_8000_enterprise_a811a-ps.ppd
 
 Several source codes may have its original copyright owner and/or
-be licensed under other than Flora License, Version 1.1, say, MIT License.
+be licensed under other than Apache License, Version 2., say, MIT License.
 Please, see copyright and license comments section in the header of each file,
 and the LICENSE.MIT for MIT License terms and conditions
