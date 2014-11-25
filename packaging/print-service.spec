@@ -3,11 +3,11 @@ Summary:    Print service library
 Version:    1.2.9
 Release:    0
 Group:      System/Libraries
-License:    Flora
+License:    Apache License, Version 2.0
 Source0:    %{name}-%{version}.tar.gz
 Source1001: print-service.manifest
 Source1002: print-driver-data.manifest
-Source1003: print-service-tests.manifest 
+Source1003: print-service-tests.manifest
 BuildRequires:    cmake
 BuildRequires:    pkgconfig(dlog)
 BuildRequires:    pkgconfig(eina)
@@ -66,8 +66,8 @@ cp %{SOURCE1003} .
 rm -rf %{buildroot}
 %make_install
 mkdir -p %{buildroot}/usr/share/license
-cp %{_builddir}/%{buildsubdir}/LICENSE.Flora %{buildroot}/usr/share/license/%{name}
-cp %{_builddir}/%{buildsubdir}/LICENSE.Flora %{buildroot}/usr/share/license/print-driver-data
+cp %{_builddir}/%{buildsubdir}/LICENSE.APLv2 %{buildroot}/usr/share/license/%{name}
+cp %{_builddir}/%{buildsubdir}/LICENSE.APLv2 %{buildroot}/usr/share/license/print-driver-data
 
 %clean
 rm -rf %{buildroot}
