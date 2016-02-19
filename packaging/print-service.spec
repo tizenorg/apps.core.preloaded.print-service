@@ -60,6 +60,9 @@ Set of utilities for testing different parts of library
 cp %{SOURCE1001} .
 cp %{SOURCE1002} .
 cp %{SOURCE1003} .
+export CFLAGS="$(echo $CFLAGS | sed 's/-Wl,--as-needed//g')"
+export CXXFLAGS="$(echo $CXXFLAGS | sed 's/-Wl,--as-needed//g')"
+export FFLAGS="$(echo $FFLAGS | sed 's/-Wl,--as-needed//g')"
 %cmake . -DENABLE_OM_TESTS=On -DCMAKE_ETC=%{TZ_SYS_ETC}
 
 %install
